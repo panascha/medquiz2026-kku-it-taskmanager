@@ -1,0 +1,3010 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IT Task Manager · MedQuiz KKU 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg: #F5F3EF;
+            --surface: #FFFFFF;
+            --surface2: #F0EDE8;
+            --border: #E2DDD6;
+            --border2: #CCC8BF;
+            --text: #1A1916;
+            --text2: #6B6760;
+            --text3: #A09C96;
+            --accent: #1D5FA6;
+            --accent-light: #EAF1FA;
+            --done: #0F7B55;
+            --done-bg: #E6F5EF;
+            --review: #8B5E0A;
+            --review-bg: #FDF3E0;
+            --progress: #1D5FA6;
+            --progress-bg: #EAF1FA;
+            --todo: #5A5854;
+            --todo-bg: #F0EDE8;
+            --notyet: #B83232;
+            --notyet-bg: #FDF0F0;
+            --urgent: #B83232;
+            --urgent-bg: #FFF0F0;
+            --high: #C05C00;
+            --high-bg: #FFF3EA;
+            --medium: #8B6914;
+            --medium-bg: #FDF8E6;
+            --low: #2D7A4F;
+            --low-bg: #EBF7F1;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --shadow: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 2px rgba(0, 0, 0, .04);
+            --font: 'IBM Plex Sans Thai', sans-serif;
+            --mono: 'IBM Plex Mono', monospace;
+        }
+
+        body.dark {
+            --bg: #141210;
+            --surface: #1E1C1A;
+            --surface2: #252220;
+            --border: #302D2A;
+            --border2: #3D3A36;
+            --text: #F0EDE8;
+            --text2: #A09C96;
+            --text3: #6B6760;
+            --accent-light: #1A2E46;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.6;
+            min-height: 100vh
+        }
+
+        /* ── Layout ── */
+        .shell {
+            display: flex;
+            height: 100vh;
+            overflow: hidden
+        }
+
+        .sidebar {
+            width: 224px;
+            flex-shrink: 0;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto
+        }
+
+        .main {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-width: 0
+        }
+
+        /* Split mode: tasks + side timeline side by side */
+        .main-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden
+        }
+
+        .tasks-column {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            min-width: 0
+        }
+
+        /* ── Side Timeline Panel ── */
+        .side-timeline-panel {
+            width: 340px;
+            flex-shrink: 0;
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            overflow-y: auto;
+            display: none;
+            flex-direction: column
+        }
+
+        .side-timeline-panel.open {
+            display: flex
+        }
+
+        .side-tl-header {
+            padding: 14px 16px 10px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            background: var(--surface);
+            z-index: 2
+        }
+
+        .side-tl-body {
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .tl-event-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px 12px
+        }
+
+        .tl-event-card.main-event {
+            background: var(--review-bg);
+            border-color: #f0d090
+        }
+
+        .tl-event-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.4;
+            margin-bottom: 4px
+        }
+
+        .tl-event-date {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text3)
+        }
+
+        .tl-event-place {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 2px
+        }
+
+        .tl-days-badge {
+            display: inline-block;
+            margin-top: 5px;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 99px
+        }
+
+        .tl-badge-upcoming {
+            background: var(--accent-light);
+            color: var(--accent)
+        }
+
+        .tl-badge-past {
+            background: var(--surface2);
+            color: var(--text3);
+            border: 1px solid var(--border)
+        }
+
+        .tl-badge-today {
+            background: var(--done-bg);
+            color: var(--done)
+        }
+
+        .tl-badge-main {
+            background: var(--review-bg);
+            color: var(--review)
+        }
+
+        /* ── Sidebar ── */
+        .sidebar-brand {
+            padding: 16px 18px 12px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .brand-label {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--text3);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 3px
+        }
+
+        .brand-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.3
+        }
+
+        .sidebar-section {
+            padding: 14px 10px 6px;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text3);
+            letter-spacing: .08em;
+            text-transform: uppercase
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 10px;
+            border-radius: var(--radius);
+            margin: 1px 8px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text2);
+            transition: background .12s, color .12s;
+            user-select: none
+        }
+
+        .nav-item:hover {
+            background: var(--surface2);
+            color: var(--text)
+        }
+
+        .nav-item.active {
+            background: var(--accent-light);
+            color: var(--accent);
+            font-weight: 500
+        }
+
+        .nav-icon {
+            font-size: 14px;
+            width: 16px;
+            text-align: center
+        }
+
+        .nav-count {
+            margin-left: auto;
+            font-size: 11px;
+            font-family: var(--mono);
+            background: var(--surface2);
+            color: var(--text3);
+            border-radius: 99px;
+            padding: 1px 6px
+        }
+
+        .nav-item.active .nav-count {
+            background: var(--accent);
+            color: #fff
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 8px 16px
+        }
+
+        .assignee-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: var(--radius);
+            margin: 1px 8px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text2);
+            transition: background .12s
+        }
+
+        .assignee-item:hover {
+            background: var(--surface2)
+        }
+
+        .assignee-item.active {
+            background: var(--accent-light);
+            color: var(--accent)
+        }
+
+        .avatar-sm {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 600;
+            flex-shrink: 0
+        }
+
+        /* ── Countdown ── */
+        .countdown-bar {
+            background: linear-gradient(90deg, #1a3a5c, #1D5FA6);
+            color: #fff;
+            padding: 8px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            flex-shrink: 0
+        }
+
+        .countdown-label {
+            opacity: .75;
+            font-size: 11px
+        }
+
+        .countdown-units {
+            display: flex;
+            gap: 14px;
+            margin-left: 8px
+        }
+
+        .cnt-unit {
+            text-align: center
+        }
+
+        .cnt-num {
+            font-family: var(--mono);
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1
+        }
+
+        .cnt-lbl {
+            font-size: 9px;
+            opacity: .6;
+            text-transform: uppercase;
+            letter-spacing: .07em
+        }
+
+        .countdown-event {
+            margin-left: auto;
+            font-size: 11px;
+            opacity: .7
+        }
+
+        /* ── Progress bars ── */
+        .progress-section {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 24px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            flex-shrink: 0
+        }
+
+        .phase-bar {
+            flex: 1;
+            min-width: 140px
+        }
+
+        .phase-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text2);
+            margin-bottom: 4px
+        }
+
+        .phase-bar-label span {
+            font-family: var(--mono)
+        }
+
+        .bar-track {
+            height: 6px;
+            background: var(--surface2);
+            border-radius: 99px;
+            overflow: hidden
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 99px;
+            transition: width .6s ease
+        }
+
+        /* ── Topbar ── */
+        .topbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            flex-shrink: 0
+        }
+
+        .topbar-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .search-wrap {
+            position: relative
+        }
+
+        .search-input {
+            border: 1px solid var(--border2);
+            border-radius: var(--radius);
+            padding: 6px 10px 6px 30px;
+            font-size: 13px;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            width: 180px;
+            outline: none;
+            transition: border .15s, box-shadow .15s
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(29, 95, 166, .12)
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 9px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text3);
+            font-size: 13px;
+            pointer-events: none
+        }
+
+        .btn {
+            border: none;
+            border-radius: var(--radius);
+            padding: 7px 14px;
+            font-size: 13px;
+            font-family: var(--font);
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity .15s, transform .1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .btn:active {
+            transform: scale(.97)
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff
+        }
+
+        .btn-primary:hover {
+            opacity: .9
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text2);
+            border: 1px solid var(--border2)
+        }
+
+        .btn-ghost:hover {
+            background: var(--surface2)
+        }
+
+        .btn-danger {
+            background: var(--notyet);
+            color: #fff
+        }
+
+        .btn-danger:hover {
+            opacity: .85
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: 1px solid var(--border2);
+            border-radius: var(--radius);
+            padding: 6px 9px;
+            cursor: pointer;
+            color: var(--text2);
+            font-size: 14px;
+            transition: background .12s
+        }
+
+        .btn-icon:hover {
+            background: var(--surface2)
+        }
+
+        .btn-icon.active {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: var(--accent)
+        }
+
+        /* ── Stats bar ── */
+        .stats-bar {
+            display: flex;
+            gap: 6px;
+            padding: 10px 24px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            flex-shrink: 0
+        }
+
+        .stat-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: opacity .15s
+        }
+
+        .stat-pill span {
+            font-family: var(--mono);
+            font-size: 11px
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: var(--accent-light);
+            color: var(--accent);
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-left: auto
+        }
+
+        .filter-chip:hover {
+            opacity: .85
+        }
+
+        /* ── Content ── */
+        .content {
+            padding: 20px 24px;
+            flex: 1
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text3)
+        }
+
+        .empty-icon {
+            font-size: 36px;
+            margin-bottom: 12px
+        }
+
+        .empty-text {
+            font-size: 14px
+        }
+
+        /* ── Task Cards ── */
+        .tasks-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .group-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text3);
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            padding: 16px 0 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .group-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border)
+        }
+
+        .task-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: border-color .15s, box-shadow .15s;
+            user-select: none
+        }
+
+        .task-card:hover {
+            border-color: var(--border2);
+            box-shadow: var(--shadow)
+        }
+
+        .task-card.expanded {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(29, 95, 166, .08)
+        }
+
+        .task-card.blocker-card {
+            border-left: 3px solid #B83232
+        }
+
+        .task-row {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0
+        }
+
+        .task-name {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .task-chips {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+            flex-wrap: wrap
+        }
+
+        .chip {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: 99px;
+            white-space: nowrap
+        }
+
+        .chip-deadline {
+            font-size: 11px;
+            color: var(--text3);
+            font-family: var(--mono)
+        }
+
+        .chip-assignee {
+            font-size: 11px;
+            color: var(--text2);
+            background: var(--surface2);
+            border-radius: 99px;
+            padding: 2px 8px
+        }
+
+        .chip-url {
+            font-size: 11px;
+            padding: 2px 8px;
+            background: var(--accent-light);
+            color: var(--accent);
+            border-radius: 99px;
+            text-decoration: none;
+            white-space: nowrap
+        }
+
+        .chip-url:hover {
+            opacity: .8
+        }
+
+        .chevron {
+            font-size: 12px;
+            color: var(--text3);
+            transition: transform .2s;
+            flex-shrink: 0
+        }
+
+        .task-card.expanded .chevron {
+            transform: rotate(180deg)
+        }
+
+        .task-detail-wrap {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border)
+        }
+
+        .task-card.expanded .task-detail-wrap {
+            display: block
+        }
+
+        .detail-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px
+        }
+
+        .detail-list li {
+            font-size: 12px;
+            color: var(--text2);
+            padding-left: 14px;
+            position: relative;
+            line-height: 1.5
+        }
+
+        .detail-list li::before {
+            content: '–';
+            position: absolute;
+            left: 0;
+            color: var(--text3)
+        }
+
+        .tech-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 8px
+        }
+
+        .tech-pill {
+            font-size: 11px;
+            font-family: var(--mono);
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2px 7px;
+            color: var(--text2)
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            align-items: center
+        }
+
+        .dep-warning {
+            font-size: 11px;
+            color: #B83232;
+            background: #FFF0F0;
+            border: 1px solid #F5C6C6;
+            border-radius: 6px;
+            padding: 4px 10px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .comment-box {
+            margin-top: 8px;
+            background: var(--surface2);
+            border-radius: var(--radius);
+            padding: 8px 10px
+        }
+
+        .comment-text {
+            font-size: 12px;
+            color: var(--text2);
+            font-style: italic
+        }
+
+        .assignee-dropdown {
+            font-family: var(--font);
+            font-size: 12px;
+            border: 1px solid var(--border2);
+            border-radius: var(--radius);
+            padding: 3px 6px;
+            background: var(--bg);
+            color: var(--text);
+            cursor: pointer;
+            outline: none
+        }
+
+        .assignee-dropdown:focus {
+            border-color: var(--accent)
+        }
+
+        /* ── Drag handle ── */
+        .drag-handle {
+            cursor: grab;
+            color: var(--text3);
+            font-size: 14px;
+            padding: 0 2px;
+            line-height: 1;
+            flex-shrink: 0;
+            opacity: 0;
+            transition: opacity .15s
+        }
+
+        .task-card:hover .drag-handle {
+            opacity: 1
+        }
+
+        .sortable-ghost {
+            opacity: 0.35;
+            background: var(--accent-light) !important;
+            border-color: var(--accent) !important
+        }
+
+        .sortable-drag {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .14) !important
+        }
+
+        /* ── Sub-tasks ── */
+        .subtasks-section {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border)
+        }
+
+        .subtasks-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .subtask-progress-bar {
+            flex: 1;
+            height: 4px;
+            background: var(--surface2);
+            border-radius: 99px;
+            overflow: hidden;
+            max-width: 80px
+        }
+
+        .subtask-progress-fill {
+            height: 100%;
+            background: var(--done);
+            border-radius: 99px;
+            transition: width .3s
+        }
+
+        .subtask-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 3px 0
+        }
+
+        .subtask-item input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            accent-color: var(--done);
+            flex-shrink: 0
+        }
+
+        .subtask-text {
+            font-size: 12px;
+            color: var(--text2);
+            flex: 1;
+            line-height: 1.4
+        }
+
+        .subtask-text.done {
+            text-decoration: line-through;
+            opacity: 0.5
+        }
+
+        .subtask-del {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text3);
+            font-size: 13px;
+            padding: 0 3px;
+            opacity: 0;
+            transition: opacity .1s;
+            line-height: 1
+        }
+
+        .subtask-item:hover .subtask-del {
+            opacity: 1
+        }
+
+        .subtask-add-row {
+            display: flex;
+            gap: 5px;
+            margin-top: 6px
+        }
+
+        .subtask-add-input {
+            flex: 1;
+            font-family: var(--font);
+            font-size: 12px;
+            border: 1px solid var(--border2);
+            border-radius: var(--radius);
+            padding: 5px 8px;
+            background: var(--bg);
+            color: var(--text);
+            outline: none
+        }
+
+        .subtask-add-input:focus {
+            border-color: var(--accent)
+        }
+
+        .subtask-add-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: var(--radius);
+            padding: 5px 9px;
+            font-size: 12px;
+            cursor: pointer;
+            color: var(--text2);
+            font-family: var(--font)
+        }
+
+        .subtask-add-btn:hover {
+            background: var(--border)
+        }
+
+        /* ── Priority / Status chips ── */
+        .p-urgent {
+            background: var(--urgent-bg);
+            color: var(--urgent)
+        }
+
+        .p-high {
+            background: var(--high-bg);
+            color: var(--high)
+        }
+
+        .p-medium {
+            background: var(--medium-bg);
+            color: var(--medium)
+        }
+
+        .p-low {
+            background: var(--low-bg);
+            color: var(--low)
+        }
+
+        .s-done {
+            background: var(--done)
+        }
+
+        .s-review {
+            background: var(--review)
+        }
+
+        .s-progress {
+            background: var(--progress)
+        }
+
+        .s-todo {
+            background: var(--todo)
+        }
+
+        .s-notyet {
+            background: var(--notyet)
+        }
+
+        .c-done {
+            background: var(--done-bg);
+            color: var(--done)
+        }
+
+        .c-review {
+            background: var(--review-bg);
+            color: var(--review)
+        }
+
+        .c-progress {
+            background: var(--progress-bg);
+            color: var(--progress)
+        }
+
+        .c-todo {
+            background: var(--todo-bg);
+            color: var(--todo)
+        }
+
+        .c-notyet {
+            background: var(--notyet-bg);
+            color: var(--notyet)
+        }
+
+        /* ── Tech filter bar ── */
+        .tech-filter-bar {
+            display: flex;
+            gap: 6px;
+            padding: 8px 24px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            align-items: center;
+            flex-shrink: 0
+        }
+
+        .tech-filter-label {
+            font-size: 11px;
+            color: var(--text3);
+            font-weight: 500;
+            margin-right: 4px
+        }
+
+        .tech-filter-btn {
+            font-size: 11px;
+            font-family: var(--mono);
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 3px 8px;
+            cursor: pointer;
+            color: var(--text2);
+            transition: all .12s
+        }
+
+        .tech-filter-btn:hover {
+            border-color: var(--border2);
+            color: var(--text)
+        }
+
+        .tech-filter-btn.active {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: var(--accent)
+        }
+
+        .tasks-panel {
+            display: block
+        }
+
+        .tasks-panel.hidden {
+            display: none
+        }
+
+        .timeline-table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        .timeline-table th {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+            background: var(--surface2)
+        }
+
+        .timeline-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            vertical-align: top
+        }
+
+        .timeline-table tr:last-child td {
+            border-bottom: none
+        }
+
+        .timeline-table tr:hover td {
+            background: var(--surface2)
+        }
+
+        .event-main {
+            font-weight: 500;
+            color: var(--text)
+        }
+
+        .event-date {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text2)
+        }
+
+        .event-location {
+            font-size: 12px;
+            color: var(--text3)
+        }
+
+        .event-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .badge-upcoming {
+            background: #EAF1FA;
+            color: #1D5FA6
+        }
+
+        .badge-today {
+            background: #E6F5EF;
+            color: #0F7B55
+        }
+
+        .badge-past {
+            background: var(--surface2);
+            color: var(--text3)
+        }
+
+        .badge-main {
+            background: #FDF3E0;
+            color: #8B5E0A
+        }
+
+        .days-away {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text3)
+        }
+
+        /* ── Toast ── */
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--text);
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: var(--radius-lg);
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity .25s, transform .25s;
+            pointer-events: none;
+            z-index: 1000;
+            max-width: 300px
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        #toast.error {
+            background: var(--notyet)
+        }
+
+        /* ── Loading ── */
+        #loading {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: opacity .3s
+        }
+
+        #loading.hidden {
+            opacity: 0;
+            pointer-events: none
+        }
+
+        .spinner {
+            width: 28px;
+            height: 28px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin .7s linear infinite
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        /* ── Modal ── */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .35);
+            z-index: 500;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 48px 16px;
+            overflow-y: auto
+        }
+
+        .modal-backdrop.open {
+            display: flex
+        }
+
+        .modal {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 540px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .18);
+            border: 1px solid var(--border);
+            animation: modalIn .2s ease
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(-16px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .modal-header h2 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--text3);
+            line-height: 1;
+            padding: 4px
+        }
+
+        .modal-close:hover {
+            color: var(--text)
+        }
+
+        .modal-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px
+        }
+
+        .modal-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px
+        }
+
+        .field-group label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text2);
+            letter-spacing: .04em;
+            text-transform: uppercase
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        input,
+        select,
+        textarea {
+            font-family: var(--font);
+            font-size: 13px;
+            color: var(--text);
+            background: var(--bg);
+            border: 1px solid var(--border2);
+            border-radius: var(--radius);
+            padding: 8px 10px;
+            width: 100%;
+            outline: none;
+            transition: border .15s, box-shadow .15s
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(29, 95, 166, .1)
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.6
+        }
+
+        .dep-warn-modal {
+            font-size: 12px;
+            color: #B83232;
+            background: #FFF0F0;
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-top: -8px;
+            display: none
+        }
+
+        .dep-warn-modal.visible {
+            display: block
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text2)
+        }
+
+        .checkbox-row input[type=checkbox] {
+            width: auto;
+            margin: 0
+        }
+
+        /* ── Logs modal ── */
+        .logs-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px
+        }
+
+        .logs-table th {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--text3);
+            padding: 6px 10px;
+            border-bottom: 2px solid var(--border);
+            text-align: left
+        }
+
+        .logs-table td {
+            padding: 7px 10px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text2);
+            vertical-align: top
+        }
+
+        .logs-table tr:last-child td {
+            border-bottom: none
+        }
+
+        .log-action {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 99px;
+            background: var(--surface2);
+            color: var(--text3)
+        }
+
+        /* ── Timeline (full view) ── */
+        .timeline-panel {
+            display: none
+        }
+
+        /* เพิ่มส่วนนี้เพื่อให้แสดงผลเมื่อเปิดหน้า Timeline */
+        .timeline-panel.visible {
+            display: block;
+        }
+
+        /* ── Visual Flow Timeline ── */
+        .visual-timeline-panel {
+            display: none;
+            background: var(--surface);
+            overflow: auto;
+            padding: 0;
+            flex: 1;
+        }
+
+        .visual-timeline-panel.visible {
+            display: block;
+        }
+
+        .vt-container {
+            position: relative;
+            min-width: 100%;
+            min-height: 100%;
+            background: var(--surface);
+            background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 100% 40px, 40px 100%;
+            background-position: 0 -1px, -1px 0;
+        }
+
+        .vt-svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .vt-event-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            border-left: 2px dashed var(--accent);
+            z-index: 2;
+        }
+
+        .vt-event-label {
+            position: absolute;
+            top: 14px;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent);
+            padding: 3px 8px;
+            background: var(--surface);
+            border: 1px solid var(--accent);
+            border-radius: 99px;
+            z-index: 3;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .vt-task {
+            position: absolute;
+            width: 150px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 6px 8px;
+            font-size: 11px;
+            z-index: 10;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+            transition: box-shadow 0.15s, transform 0.15s;
+        }
+
+        .vt-task:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+            z-index: 11;
+        }
+
+        .vt-task-title {
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+
+        .vt-task-meta {
+            color: var(--text3);
+            font-size: 10px;
+            font-family: var(--mono);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ── Timeline (full view) ── */
+        .timeline-panel {
+            display: none
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:900px) {
+            .side-timeline-panel {
+                display: none !important
+            }
+        }
+
+        @media(max-width:768px) {
+            .sidebar {
+                display: none
+            }
+
+            .topbar {
+                padding: 10px 16px
+            }
+
+            .content {
+                padding: 14px 16px
+            }
+
+            .stats-bar,
+            .tech-filter-bar,
+            .progress-section {
+                padding: 8px 16px
+            }
+
+            .search-input {
+                width: 140px
+            }
+
+            .countdown-bar {
+                padding: 8px 16px
+            }
+
+            .countdown-event {
+                display: none
+            }
+        }
+
+        @media(max-width:480px) {
+            .task-chips .chip:not(.c-done):not(.c-notyet) {
+                display: none
+            }
+
+            .task-card {
+                padding: 10px 12px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="shell">
+        <!-- ── Sidebar ── -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-label">MedQuiz KKU 2026</div>
+                <div class="brand-title">IT Task Manager</div>
+            </div>
+
+            <div class="sidebar-section">Views</div>
+            <div class="nav-item active" id="nav-board" onclick="switchView('tasks',this)">
+                <span class="nav-icon">▦</span> Board
+            </div>
+            <div class="nav-item" id="nav-timeline" onclick="switchView('timeline',this)">
+                <span class="nav-icon">📅</span> Timeline
+            </div>
+            <div class="nav-item" id="nav-flow" onclick="switchView('flow',this)">
+                <span class="nav-icon">📈</span> Flow Timeline
+            </div>
+            <div class="nav-item" id="nav-blockers" onclick="switchView('blockers',this)">
+                <span class="nav-icon">🔴</span> Blockers
+                <span class="nav-count" id="cnt-blockers">0</span>
+            </div>
+            <div class="nav-item" id="nav-logs" onclick="openLogsModal()">
+                <span class="nav-icon">🗃</span> Activity Log
+            </div>
+
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-section">Phase</div>
+            <div class="nav-item" id="nav-all" onclick="setFilter('phase','all',this)">
+                <span class="nav-icon">◈</span> ทั้งหมด
+                <span class="nav-count" id="cnt-all">—</span>
+            </div>
+            <div class="nav-item" onclick="setFilter('phase','p1',this)">
+                <span class="nav-icon" style="color:#7F77DD">①</span> Phase 1 รับสมัคร
+                <span class="nav-count" id="cnt-p1">—</span>
+            </div>
+            <div class="nav-item" onclick="setFilter('phase','p2',this)">
+                <span class="nav-icon" style="color:#1D9E75">②</span> Phase 2 รอบ 0
+                <span class="nav-count" id="cnt-p2">—</span>
+            </div>
+            <div class="nav-item" onclick="setFilter('phase','p3',this)">
+                <span class="nav-icon" style="color:#BA7517">③</span> Phase 3 KKUEXAM
+                <span class="nav-count" id="cnt-p3">—</span>
+            </div>
+            <div class="nav-item" onclick="setFilter('phase','p4',this)">
+                <span class="nav-icon" style="color:#378ADD">④</span> Phase 4 วันงาน
+                <span class="nav-count" id="cnt-p4">—</span>
+            </div>
+
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-section">Assignee</div>
+            <div id="assignee-nav"></div>
+
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-section">Priority</div>
+            <div class="nav-item" onclick="setFilter('priority','1-urgent',this)">
+                <span class="nav-icon">🔴</span> Urgent
+                <span class="nav-count" id="cnt-urg">—</span>
+            </div>
+            <div class="nav-item" onclick="setFilter('priority','2-high',this)">
+                <span class="nav-icon">🟠</span> High
+                <span class="nav-count" id="cnt-high">—</span>
+            </div>
+            <div class="nav-item" onclick="setFilter('priority','3-medium',this)">
+                <span class="nav-icon">🟡</span> Medium
+                <span class="nav-count" id="cnt-med">—</span>
+            </div>
+            <div class="nav-item" onclick="setFilter('priority','4-low',this)">
+                <span class="nav-icon">🔵</span> Low
+                <span class="nav-count" id="cnt-low">—</span>
+            </div>
+
+            <div style="flex:1"></div>
+            <div style="padding:12px 16px;border-top:1px solid var(--border)">
+                <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="toggleDark()">🌙
+                    Dark
+                    Mode</button>
+            </div>
+        </aside>
+
+        <!-- ── Main ── -->
+        <div class="main">
+            <!-- Countdown -->
+            <div class="countdown-bar">
+                <span class="countdown-label">วันแข่งขัน MedQuiz 2026</span>
+                <div class="countdown-units">
+                    <div class="cnt-unit">
+                        <div class="cnt-num" id="cd-days">—</div>
+                        <div class="cnt-lbl">วัน</div>
+                    </div>
+                    <div class="cnt-unit">
+                        <div class="cnt-num" id="cd-hrs">—</div>
+                        <div class="cnt-lbl">ชม.</div>
+                    </div>
+                    <div class="cnt-unit">
+                        <div class="cnt-num" id="cd-min">—</div>
+                        <div class="cnt-lbl">นาที</div>
+                    </div>
+                    <div class="cnt-unit">
+                        <div class="cnt-num" id="cd-sec">—</div>
+                        <div class="cnt-lbl">วินาที</div>
+                    </div>
+                </div>
+                <span class="countdown-event">🏥 คณะแพทยศาสตร์ KKU · 1 พ.ย. 2569</span>
+            </div>
+
+            <!-- Progress bars -->
+            <div class="progress-section" id="progress-section"></div>
+
+            <!-- Topbar -->
+            <div class="topbar">
+                <div class="topbar-title" id="topbar-title">ทั้งหมด</div>
+                <div class="search-wrap">
+                    <span class="search-icon">⌕</span>
+                    <input type="text" class="search-input" id="search-input" placeholder="ค้นหางาน..."
+                        oninput="onSearch(this.value)">
+                </div>
+                <!-- Sort by date -->
+                <button class="btn-icon" title="เรียงตามวันที่" onclick="sortByDate()" id="btn-sort-date">📅</button>
+                <!-- Split view toggle -->
+                <button class="btn-icon" title="Split View: Timeline" onclick="toggleSplitView()" id="btn-split"
+                    style="display:none">⊟</button>
+                <button class="btn-icon" title="รีเฟรช" onclick="loadData()">↻</button>
+                <button class="btn btn-primary" onclick="openModal()">＋ เพิ่มงาน</button>
+            </div>
+
+            <!-- Stats bar -->
+            <div class="stats-bar">
+                <div class="stat-pill c-done" onclick="setFilter('status','done',null)">✅ Done <span
+                        id="s-done">0</span></div>
+                <div class="stat-pill c-review" onclick="setFilter('status','review',null)">🔍 Review <span
+                        id="s-review">0</span></div>
+                <div class="stat-pill c-progress" onclick="setFilter('status','progress',null)">🔄 In Progress <span
+                        id="s-progress">0</span></div>
+                <div class="stat-pill c-todo" onclick="setFilter('status','todo',null)">📋 To Do <span
+                        id="s-todo">0</span>
+                </div>
+                <div class="stat-pill c-notyet" onclick="setFilter('status','notyet',null)">⏳ Not Yet <span
+                        id="s-notyet">0</span></div>
+                <div class="filter-chip" id="filter-clear" style="display:none" onclick="clearFilters()">✕ ล้างตัวกรอง
+                </div>
+            </div>
+
+            <!-- Tech filter -->
+            <div class="tech-filter-bar" id="tech-filter-bar">
+                <span class="tech-filter-label">Tech:</span>
+                <span id="tech-filter-btns"></span>
+            </div>
+
+            <!-- Main body (tasks + optional side timeline) -->
+            <div class="main-body">
+
+                <!-- Task board column -->
+                <div class="tasks-column">
+                    <div class="content tasks-panel" id="tasks-panel">
+                        <div id="task-container" class="tasks-grid"></div>
+                    </div>
+                    <!-- Full Timeline panel (inside tasks column) -->
+                    <div class="content timeline-panel" id="timeline-panel">
+                        <h3 style="font-size:15px;font-weight:600;margin-bottom:16px;color:var(--text)">📅 ตารางกิจกรรม
+                            MedQuiz KKU
+                            2026</h3>
+                        <div
+                            style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">
+                            <table class="timeline-table" id="timeline-table"></table>
+                        </div>
+                    </div>
+                    <!-- Flow / Gantt Timeline panel -->
+                    <div class="visual-timeline-panel" id="visual-timeline-panel">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side Timeline Panel -->
+            <div class="side-timeline-panel" id="side-timeline-panel">
+                <div class="side-tl-header">
+                    <span>📅 กำหนดการ</span>
+                    <button class="btn-icon" style="border:none;padding:4px 6px;font-size:14px"
+                        onclick="toggleSplitView()" title="ปิด">✕</button>
+                </div>
+                <div class="side-tl-body" id="side-tl-body"></div>
+            </div>
+
+        </div><!-- /main-body -->
+    </div><!-- /main -->
+    </div><!-- /shell -->
+
+    <!-- ── Edit/Add Modal ── -->
+    <div class="modal-backdrop" id="modal-backdrop" onclick="handleBackdropClick(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modal-title">เพิ่มงานใหม่</h2>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="f-id">
+                <div class="field-group">
+                    <label>ชื่องาน *</label>
+                    <input type="text" id="f-name" placeholder="ระบุชื่องาน...">
+                </div>
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>สถานะ</label>
+                        <select id="f-status">
+                            <option value="todo">📋 To Do</option>
+                            <option value="progress">🔄 In Progress</option>
+                            <option value="review">🔍 Review</option>
+                            <option value="done">✅ Done</option>
+                            <option value="notyet">⏳ Not Yet</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label>Priority</label>
+                        <select id="f-priority">
+                            <option value="1-urgent">🔴 1-Urgent</option>
+                            <option value="2-high">🟠 2-High</option>
+                            <option value="3-medium" selected>🟡 3-Medium</option>
+                            <option value="4-low">🔵 4-Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>Phase</label>
+                        <select id="f-phase">
+                            <option value="p1">Phase 1 — รับสมัคร</option>
+                            <option value="p2">Phase 2 — รอบ 0</option>
+                            <option value="p3">Phase 3 — KKUEXAM</option>
+                            <option value="p4">Phase 4 — วันงาน</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label>กลุ่มงาน (Group)</label>
+                        <input type="text" id="f-group" placeholder="เช่น prep, dev, check">
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>Deadline</label>
+                        <input type="date" id="f-deadline" placeholder="เช่น 26 พ.ค.">
+                    </div>
+                    <div class="field-group">
+                        <label>ผู้รับผิดชอบ</label>
+                        <input type="text" id="f-assignee" placeholder="เช่น Panas">
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>URL (Resource Link)</label>
+                        <input type="text" id="f-url" placeholder="https://forms.google.com/...">
+                    </div>
+                    <div class="field-group">
+                        <label>อ้างอิงงาน (Depends on)</label>
+                        <select id="f-depends" onchange="checkDependency(this.value)">
+                            <option value="">-- ไม่อ้างอิง --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="dep-warn-modal" id="dep-warn-modal">⚠️ งานต้นทาง (<span id="dep-warn-id"></span>)
+                    ยังไม่เสร็จ</div>
+                <div class="field-group">
+                    <label>Comment / Note</label>
+                    <input type="text" id="f-comment" placeholder="เช่น รอไฟล์จากพี่วิชาการอยู่ครับ">
+                </div>
+                <div class="field-group">
+                    <label>รายละเอียด (แยกด้วย Enter)</label>
+                    <textarea id="f-detail" placeholder="- รายการที่ 1&#10;- รายการที่ 2"></textarea>
+                </div>
+                <div class="field-group">
+                    <label>Tech Stack (แยกด้วยคอมม่า)</label>
+                    <input type="text" id="f-tech" placeholder="เช่น Firebase, GAS, Google Forms">
+                </div>
+
+                <div class="field-group">
+                    <label>Sub-tasks (งานย่อย)</label>
+                    <div id="modal-subtasks-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:4px;">
+                    </div>
+                    <div class="subtask-add-row" style="margin-top:0;">
+                        <input type="text" class="subtask-add-input" id="modal-subtask-input"
+                            placeholder="เพิ่มงานย่อย..."
+                            onkeydown="if(event.key==='Enter'){ event.preventDefault(); addModalSubTask(); }">
+                        <button type="button" class="subtask-add-btn" onclick="addModalSubTask()">+ เพิ่ม</button>
+                    </div>
+                </div>
+
+                <div class="checkbox-row" style="margin-top:8px;">
+                    <input type="checkbox" id="f-blocker">
+                    <label for="f-blocker"
+                        style="font-size:13px;text-transform:none;font-weight:400;letter-spacing:0">🔴 เป็น
+                        Blocker (งานนี้ขัดขวางงานอื่น)</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger btn-sm" id="btn-delete" style="display:none;margin-right:auto"
+                    onclick="handleDelete()">ลบงานนี้</button>
+                <button class="btn btn-ghost btn-sm" onclick="closeModal()">ยกเลิก</button>
+                <button class="btn btn-primary btn-sm" id="btn-save" onclick="handleSave()">💾 บันทึก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Logs Modal ── -->
+    <div class="modal-backdrop" id="logs-backdrop" onclick="if(event.target===this)closeLogsModal()">
+        <div class="modal" style="max-width:680px">
+            <div class="modal-header">
+                <h2>🗃 Activity Log</h2>
+                <button class="modal-close" onclick="closeLogsModal()">✕</button>
+            </div>
+            <div class="modal-body" style="padding:0;max-height:500px;overflow-y:auto">
+                <table class="logs-table">
+                    <thead>
+                        <tr>
+                            <th>เวลา</th>
+                            <th>Task ID</th>
+                            <th>ผู้ใช้</th>
+                            <th>Action</th>
+                            <th>เดิม → ใหม่</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-body"></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost btn-sm" onclick="closeLogsModal()">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        // ── Config ──────────────────────────────────────────────────
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxH48T8x5m3lif-jcuPNQB4rLnS9xdo1eh6PWiSwqx4VnsBjDrc9sH5RduosQ_pI_XT/exec';
+
+        // ── Timeline data (static) ───────────────────────────────────
+        const TIMELINE_EVENTS = [
+            { activity: 'เปิดรับสมัครรอบคัดเลือก', start: '2026-07-14T08:00', end: '2026-08-14T23:59', place: 'Online' },
+            { activity: 'การสอบรอบคัดเลือก (Round 0)', start: '2026-09-12T13:00', end: '2026-09-12T17:00', place: 'Online' },
+            { activity: 'ประกาศผลทีมตัวจริง', start: '2026-09-29T17:00', end: null, place: 'Website' },
+            { activity: 'ยืนยันสิทธิ์ & ชำระเงิน (ตัวจริง)', start: '2026-09-29T17:00', end: '2026-09-30T23:59', place: 'Online' },
+            { activity: 'ประกาศเรียกทีมสำรอง', start: '2026-10-02T17:00', end: null, place: 'Website' },
+            { activity: 'ยืนยันสิทธิ์ & ชำระเงิน (ทีมสำรอง)', start: '2026-10-02T17:00', end: '2026-10-03T23:59', place: 'Online' },
+            { activity: 'ประกาศรายชื่อทีมที่มีสิทธิ์แข่งขัน', start: '2026-10-06T17:00', end: null, place: 'Website' },
+            { activity: '🏆 วันแข่งขัน (รอบ 1, 2, 3)', start: '2026-11-01T07:00', end: '2026-11-01T17:30', place: 'คณะแพทยศาสตร์ มข.', isMain: true },
+        ];
+
+        // ── State ────────────────────────────────────────────────────
+        let ALL_TASKS = [];
+        let LOCAL_LOGS = [];
+        let activeFilter = { type: 'phase', value: 'all' };
+        let searchQuery = '';
+        let activeTechFilter = '';
+        let expandedIds = new Set();
+        let currentView = 'tasks';
+        let splitViewOpen = false;
+        let sortableInstance = null;
+        // orderMap: taskId → display order index (for drag & drop persistence)
+        let orderMap = {};
+        let isSortedByDate = false;
+
+        const STATUS_META = {
+            done: { label: 'Done', icon: '✅' }, review: { label: 'Review', icon: '🔍' },
+            progress: { label: 'In Progress', icon: '🔄' }, todo: { label: 'To Do', icon: '📋' }, notyet: { label: 'Not Yet', icon: '⏳' }
+        };
+        const PHASE_META = {
+            p1: { label: 'Phase 1 — รับสมัคร', color: '#7F77DD' }, p2: { label: 'Phase 2 — รอบ 0', color: '#1D9E75' },
+            p3: { label: 'Phase 3 — KKUEXAM', color: '#BA7517' }, p4: { label: 'Phase 4 — วันงาน', color: '#378ADD' }
+        };
+        const PHASE_COLORS = { p1: '#7F77DD', p2: '#1D9E75', p3: '#BA7517', p4: '#378ADD' };
+        const AVATAR_COLORS = {
+            'Panas': { bg: '#EAF1FA', color: '#185FA5' },
+            'natchanon.te': { bg: '#E6F5EF', color: '#0F6E56' },
+            'Prechakorn': { bg: '#FDF3E0', color: '#8B5E0A' },
+        };
+        const PRIORITY_META = {
+            '1-urgent': { label: 'Urgent', icon: '🔴', cls: 'p-urgent' },
+            '2-high': { label: 'High', icon: '🟠', cls: 'p-high' },
+            '3-medium': { label: 'Medium', icon: '🟡', cls: 'p-medium' },
+            '4-low': { label: 'Low', icon: '🔵', cls: 'p-low' },
+        };
+        const ASSIGNEES = ['Panas', 'natchanon.te', 'Prechakorn'];
+
+        // ── Init ─────────────────────────────────────────────────────
+        window.onload = () => { loadData(); startCountdown(); };
+
+        function loadData() {
+            // 1. สร้าง URL ใหม่ทุกครั้งที่เรียก โดยต่อท้ายด้วย Timestamp ป้องกันการ Cache
+            const noCacheUrl = API_URL + '?t=' + new Date().getTime();
+
+            // 2. สั่ง fetch โดยบังคับไม่ให้ใช้ cache (no-store)
+            fetch(noCacheUrl, { cache: 'no-store' })
+                .then(response => response.json())
+                .then(tasks => {
+                    ALL_TASKS = tasks || [];
+
+                    // ถ้ามี orderMap เก่าอยู่ ให้คงไว้ ถ้าไม่มีให้สร้างใหม่
+                    ALL_TASKS.forEach((t, i) => {
+                        if (orderMap[t.id] === undefined) orderMap[t.id] = i;
+                    });
+
+                    render();
+                    hideLoading();
+                })
+                .catch(err => {
+                    showToast('โหลดข้อมูลไม่สำเร็จ: ' + err.message, true);
+                    hideLoading();
+                });
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').classList.add('hidden');
+        }
+
+        // ── View switching ───────────────────────────────────────────
+        function switchView(view, el) {
+            currentView = view;
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if (el) el.classList.add('active');
+
+            const tasks = document.getElementById('tasks-panel');
+            const timeline = document.getElementById('timeline-panel');
+            const visualTimeline = document.getElementById('visual-timeline-panel');
+            const btnSplit = document.getElementById('btn-split');
+            const btnSort = document.getElementById('btn-sort-date');
+
+            // ซ่อนทุกหน้าก่อนเป็นค่าเริ่มต้น
+            if (tasks) tasks.classList.add('hidden');
+            if (timeline) timeline.classList.remove('visible');
+            if (visualTimeline) visualTimeline.classList.remove('visible');
+
+            if (view === 'timeline') {
+                if (timeline) timeline.classList.add('visible');
+                document.getElementById('topbar-title').textContent = '📅 Timeline MedQuiz 2026';
+                if (btnSplit) btnSplit.style.display = 'none';
+                if (btnSort) btnSort.style.display = 'none';
+                renderTimeline();
+            } else if (view === 'flow') {
+                if (visualTimeline) visualTimeline.classList.add('visible');
+                document.getElementById('topbar-title').textContent = '📈 Flow Timeline';
+                if (btnSplit) btnSplit.style.display = 'none';
+                if (btnSort) btnSort.style.display = 'none';
+                renderVisualTimeline();
+            } else if (view === 'blockers') {
+                if (tasks) tasks.classList.remove('hidden');
+                document.getElementById('topbar-title').textContent = '🔴 Blockers';
+                activeFilter = { type: 'blocker', value: true };
+                if (btnSplit) btnSplit.style.display = '';
+                if (btnSort) btnSort.style.display = '';
+                render();
+            } else {
+                if (tasks) tasks.classList.remove('hidden');
+                activeFilter = { type: 'phase', value: 'all' };
+                document.getElementById('topbar-title').textContent = 'ทั้งหมด';
+                if (btnSplit) btnSplit.style.display = '';
+                if (btnSort) btnSort.style.display = '';
+                render();
+            }
+        }
+        // ── Split View ───────────────────────────────────────────────
+        function toggleSplitView() {
+            splitViewOpen = !splitViewOpen;
+            const panel = document.getElementById('side-timeline-panel');
+            const btn = document.getElementById('btn-split');
+            if (splitViewOpen) {
+                panel.classList.add('open');
+                btn.classList.add('active');
+                btn.title = 'ปิด Split View';
+                renderSideTimeline();
+            } else {
+                panel.classList.remove('open');
+                btn.classList.remove('active');
+                btn.title = 'Split View: Timeline';
+            }
+        }
+
+        function renderSideTimeline() {
+            const now = new Date();
+            const html = TIMELINE_EVENTS.map(ev => {
+                const start = new Date(ev.start);
+                const daysAway = Math.ceil((start - now) / 86400000);
+                let badgeClass = 'tl-badge-upcoming', badgeText = `${daysAway} วัน`;
+                if (ev.isMain) { badgeClass = 'tl-badge-main'; badgeText = daysAway > 0 ? `${daysAway} วัน 🏆` : 'ผ่านแล้ว'; }
+                else if (daysAway < 0) { badgeClass = 'tl-badge-past'; badgeText = 'ผ่านแล้ว'; }
+                else if (daysAway === 0) { badgeClass = 'tl-badge-today'; badgeText = 'วันนี้'; }
+                const fmtDate = d => new Date(d).toLocaleDateString('th-TH', { month: 'short', day: 'numeric' });
+                const dateStr = ev.end ? `${fmtDate(ev.start)} – ${fmtDate(ev.end)}` : fmtDate(ev.start);
+                return `<div class="tl-event-card${ev.isMain ? ' main-event' : ''}">
+          <div class="tl-event-name">${escHtml(ev.activity)}</div>
+          <div class="tl-event-date">${dateStr}</div>
+          <div class="tl-event-place">📍 ${escHtml(ev.place)}</div>
+          <span class="tl-days-badge ${badgeClass}">${badgeText}</span>
+        </div>`;
+            }).join('');
+            document.getElementById('side-tl-body').innerHTML = html;
+        }
+
+        // ── Full Timeline render ─────────────────────────────────────
+        function renderTimeline() {
+            const now = new Date();
+            const rows = TIMELINE_EVENTS.map(ev => {
+                const start = new Date(ev.start);
+                const daysAway = Math.ceil((start - now) / 86400000);
+                let badge = '', daysStr = '';
+                if (ev.isMain) {
+                    badge = `<span class="event-badge badge-main">🏆 Main Event</span>`;
+                    daysStr = daysAway > 0 ? `<span class="days-away">${daysAway} วันจากนี้</span>` : `<span class="days-away" style="color:var(--done)">✓ ผ่านแล้ว</span>`;
+                } else if (daysAway < 0) {
+                    badge = `<span class="event-badge badge-past">ผ่านแล้ว</span>`;
+                } else if (daysAway === 0) {
+                    badge = `<span class="event-badge badge-today">วันนี้</span>`;
+                } else {
+                    badge = `<span class="event-badge badge-upcoming">กำลังจะมาถึง</span>`;
+                    daysStr = `<span class="days-away">${daysAway} วัน</span>`;
+                }
+                const fmtDate = d => new Date(d).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                const dateStr = ev.end ? `${fmtDate(ev.start)} – ${fmtDate(ev.end)}` : fmtDate(ev.start);
+                return `<tr><td><div class="event-main">${escHtml(ev.activity)}</div><div style="margin-top:4px;display:flex;gap:8px;align-items:center">${badge} ${daysStr}</div></td><td><div class="event-date">${dateStr}</div></td><td class="event-location">${escHtml(ev.place)}</td></tr>`;
+            }).join('');
+            document.getElementById('timeline-table').innerHTML = `<thead><tr><th>กิจกรรม</th><th>วันที่</th><th>สถานที่</th></tr></thead><tbody>${rows}</tbody>`;
+        }
+
+        // ── Visual Flow Timeline render (Updated for ISO Date) ───────
+        function renderVisualTimeline() {
+            const containerEl = document.getElementById('visual-timeline-panel');
+            if (!ALL_TASKS || ALL_TASKS.length === 0) {
+                containerEl.innerHTML = '<div class="empty">ไม่พบข้อมูลงาน</div>';
+                return;
+            }
+
+            // 1. เตรียมข้อมูลและหาช่วงเวลา (Scale)
+            const validTasks = [];
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            const nowTs = now.getTime();
+
+            let minTime = nowTs;
+            let maxTime = nowTs;
+
+            ALL_TASKS.forEach(t => {
+                const d = parseDeadline(t.deadline);
+                if (d) {
+                    validTasks.push({ ...t, parsedDate: d });
+                    const ts = d.getTime();
+                    if (ts < minTime) minTime = ts;
+                    if (ts > maxTime) maxTime = ts;
+                }
+            });
+
+            TIMELINE_EVENTS.forEach(e => {
+                const ts = new Date(e.start).getTime();
+                if (ts < minTime) minTime = ts;
+                if (ts > maxTime) maxTime = ts;
+            });
+
+            // ขยายขอบเขตแกนเวลา (Margin)
+            minTime -= 86400000 * 5;  // ล่วงหน้า 5 วัน
+            maxTime += 86400000 * 10; // หลังกำหนดการสุดท้าย 10 วัน
+
+            const pxPerDay = 45; // ขยายความกว้างต่อวันให้เห็นลำดับงานชัดขึ้น
+            const containerWidth = Math.max(((maxTime - minTime) / 86400000) * pxPerDay, 1000);
+
+            let innerHtml = '';
+            let svg = `<svg class="vt-svg" style="width:${containerWidth}px; height: 100%;">
+        <defs>
+          <marker id="vt-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--text3)"/>
+          </marker>
+        </defs>`;
+
+            // 2. วาดเส้นขีดแบ่งวัน (Background Grid)
+            const totalDays = Math.ceil((maxTime - minTime) / 86400000);
+            for (let i = 0; i <= totalDays; i++) {
+                const x = i * pxPerDay;
+                const d = new Date(minTime + (i * 86400000));
+                // ขีดเส้นแบ่งวันจางๆ
+                innerHtml += `<div style="position:absolute; left:${x}px; top:0; bottom:0; border-left:1px solid var(--border); opacity:0.3; pointer-events:none;"></div>`;
+            }
+
+            // 3. วาดเส้น "วันนี้" (Current Day Marker)
+            const todayX = ((nowTs - minTime) / 86400000) * pxPerDay;
+            innerHtml += `<div class="vt-event-line" style="left:${todayX}px; border-left:2px solid #B83232; z-index:5; opacity:0.8;"></div>`;
+            innerHtml += `<div class="vt-event-label" style="left:${todayX}px; top:10px; color:#B83232; border:1px solid #B83232; background:#fff; font-weight:600; z-index:6;">📍 วันนี้</div>`;
+
+            // 4. วาดเส้นกำหนดการหลัก (Timeline Events)
+            TIMELINE_EVENTS.forEach(ev => {
+                const ts = new Date(ev.start).getTime();
+                const x = ((ts - minTime) / 86400000) * pxPerDay;
+                const fmtDate = new Date(ts).toLocaleDateString('th-TH', { month: 'short', day: 'numeric' });
+                innerHtml += `<div class="vt-event-line" style="left:${x}px; border-left: 2px dashed var(--accent);"></div>`;
+                innerHtml += `<div class="vt-event-label" style="left:${x}px; top:45px;">${escHtml(ev.activity)} <span style="font-weight:400; font-family:var(--mono); opacity:0.7;">(${fmtDate})</span></div>`;
+            });
+
+            // 5. จัดวางงาน (Tasks Layout)
+            validTasks.sort((a, b) => a.parsedDate - b.parsedDate);
+
+            const tracks = [];
+            const taskW = 160;
+            const taskH = 50;
+            const nodePos = {};
+
+            validTasks.forEach(t => {
+                const x = ((t.parsedDate.getTime() - minTime) / 86400000) * pxPerDay;
+                let trackIdx = 0;
+
+                // อัลกอริทึมจัดลำดับ Track เพื่อไม่ให้กล่องทับกัน
+                while (true) {
+                    if (!tracks[trackIdx]) tracks[trackIdx] = [];
+                    const canPlace = !tracks[trackIdx].some(taken => {
+                        return !(x + taskW + 30 < taken.x || x > taken.x + taskW + 30);
+                    });
+                    if (canPlace) {
+                        tracks[trackIdx].push({ x, id: t.id });
+                        break;
+                    }
+                    trackIdx++;
+                }
+
+                const y = 110 + trackIdx * (taskH + 20);
+                nodePos[t.id] = { x, y, w: taskW, h: taskH };
+
+                const phaseColor = PHASE_COLORS[t.phase] || 'var(--border)';
+                const sm = STATUS_META[t.status] || { icon: '' };
+
+                innerHtml += `
+          <div class="vt-task" style="left:${x}px; top:${y}px; border-left: 5px solid ${phaseColor}; width:${taskW}px; height:${taskH}px;" onclick="editTask('${t.id}')">
+            <div class="vt-task-title">${escHtml(t.name)}</div>
+            <div class="vt-task-meta">
+              <span>${sm.icon} <b>${t.id}</b></span>
+              <span>${formatThaiDate(t.deadline)}</span>
+            </div>
+          </div>`;
+            });
+
+            // 6. วาดเส้นความสัมพันธ์ (Dependency Curves)
+            validTasks.forEach(t => {
+                if (t.dependsOn && nodePos[t.dependsOn] && nodePos[t.id]) {
+                    const from = nodePos[t.dependsOn];
+                    const to = nodePos[t.id];
+
+                    const x1 = from.x + from.w;
+                    const y1 = from.y + from.h / 2;
+                    const x2 = to.x;
+                    const y2 = to.y + to.h / 2;
+
+                    // วาดเส้นโค้ง Bezier
+                    const cp1x = x1 + (x2 - x1) / 2;
+                    const cp2x = x1 + (x2 - x1) / 2;
+
+                    svg += `<path d="M ${x1} ${y1} C ${cp1x} ${y1}, ${cp2x} ${y2}, ${x2} ${y2}" 
+                     fill="none" stroke="var(--text3)" stroke-width="1.2" stroke-dasharray="4,2" 
+                     marker-end="url(#vt-arrow)" style="opacity: 0.6;" />`;
+                }
+            });
+
+            const maxTrackHeight = tracks.length * (taskH + 20) + 200;
+            svg += `</svg>`;
+
+            // แสดงผลลง Container
+            containerEl.innerHTML = `
+        <div class="vt-container" style="width:${containerWidth}px; min-height:${maxTrackHeight}px;">
+          ${innerHtml}
+          ${svg}
+        </div>`;
+
+            // Auto-Scroll ไปยังจุดที่ใกล้ "วันนี้"
+            setTimeout(() => {
+                containerEl.scrollLeft = Math.max(0, todayX - 200);
+            }, 100);
+        }
+        // ── Countdown ────────────────────────────────────────────────
+        function startCountdown() {
+            const TARGET = new Date('2026-11-01T07:00:00');
+            function tick() {
+                const diff = TARGET - new Date();
+                if (diff <= 0) { ['days', 'hrs', 'min', 'sec'].forEach(k => document.getElementById('cd-' + k).textContent = '0'); return; }
+                const d = Math.floor(diff / 86400000);
+                const h = Math.floor((diff % 86400000) / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+                document.getElementById('cd-days').textContent = d;
+                document.getElementById('cd-hrs').textContent = String(h).padStart(2, '0');
+                document.getElementById('cd-min').textContent = String(m).padStart(2, '0');
+                document.getElementById('cd-sec').textContent = String(s).padStart(2, '0');
+            }
+            tick(); setInterval(tick, 1000);
+        }
+
+        // ── Dark mode ────────────────────────────────────────────────
+        function toggleDark() { document.body.classList.toggle('dark'); }
+
+        // ── Progress bars ────────────────────────────────────────────
+        function renderProgressBars() {
+            const phases = ['p1', 'p2', 'p3', 'p4'];
+            const labels = { p1: 'Phase 1', p2: 'Phase 2', p3: 'Phase 3', p4: 'Phase 4' };
+            let html = '';
+            phases.forEach(p => {
+                const tasks = ALL_TASKS.filter(t => t.phase === p);
+                if (!tasks.length) return;
+                const done = tasks.filter(t => t.status === 'done').length;
+                const pct = Math.round((done / tasks.length) * 100);
+                const color = PHASE_COLORS[p] || '#888';
+                html += `<div class="phase-bar"><div class="phase-bar-label"><span style="color:${color};font-weight:500">${labels[p]}</span><span>${done}/${tasks.length} · ${pct}%</span></div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div></div>`;
+            });
+            document.getElementById('progress-section').innerHTML = html;
+        }
+
+        // ── Tech filter ──────────────────────────────────────────────
+        function renderTechFilter() {
+            const techs = new Set();
+            ALL_TASKS.forEach(t => (t.tech || []).forEach(tech => { if (tech) techs.add(tech); }));
+            const btns = [...techs].sort().map(tech => {
+                const active = activeTechFilter === tech ? ' active' : '';
+                return `<button class="tech-filter-btn${active}" onclick="setTechFilter('${escHtml(tech)}')">${escHtml(tech)}</button>`;
+            }).join(' ');
+            document.getElementById('tech-filter-btns').innerHTML = btns || '<span style="font-size:11px;color:var(--text3)">—</span>';
+        }
+
+        function setTechFilter(tech) { activeTechFilter = activeTechFilter === tech ? '' : tech; renderTechFilter(); render(); }
+
+        // ── Sort by date ─────────────────────────────────────────────
+        // Deadline strings are informal Thai text, so we do a best-effort parse.
+        // Tasks with no parseable deadline sort to the bottom.
+        function parseDeadline(str) {
+            if (!str) return null;
+            const d = new Date(str);
+            return isNaN(d.getTime()) ? null : d;
+        }
+
+        function sortByDate() {
+            isSortedByDate = !isSortedByDate;
+            const btn = document.getElementById('btn-sort-date');
+
+            if (isSortedByDate) {
+                btn.classList.add('active'); // ไฮไลท์ปุ่มเป็นสีฟ้าเมื่อเปิดใช้งาน
+                btn.title = 'สลับกลับไปเรียงตามความสำคัญ';
+                showToast('สลับไปโหมด: เรียงตามกำหนดส่ง (Deadline) ✓');
+            } else {
+                btn.classList.remove('active');
+                btn.title = 'เรียงตามวันที่';
+                showToast('สลับกลับไปโหมด: เรียงตามความเร่งด่วน (Default) ✓');
+            }
+
+            render();
+        }
+        // ── Drag & Drop ───────────────────────────────────────────────
+        function initSortable() {
+            const el = document.getElementById('task-container');
+            if (sortableInstance) { sortableInstance.destroy(); sortableInstance = null; }
+
+            // ปิดระบบลากสลับที่ฝั่งบอร์ดชั่วคราว หากใช้งานโหมดจัดเรียงตามวันที่อยู่
+            if (isSortedByDate) return;
+
+            sortableInstance = Sortable.create(el, {
+                handle: '.drag-handle',
+                ghostClass: 'sortable-ghost',
+                dragClass: 'sortable-drag',
+                animation: 150,
+                onEnd: function (evt) {
+                    const ids = [...el.querySelectorAll('.task-card[data-id]')].map(el => el.dataset.id);
+                    const visibleTasks = getFiltered();
+                    const visibleIds = visibleTasks.map(t => t.id);
+                    const reordered = ids.map(id => ALL_TASKS.find(t => t.id === id)).filter(Boolean);
+                    const nonVisible = ALL_TASKS.filter(t => !visibleIds.includes(t.id));
+                    ALL_TASKS = [...reordered, ...nonVisible];
+                    ALL_TASKS.forEach((t, i) => { orderMap[t.id] = i; });
+                    showToast('จัดลำดับใหม่เรียบร้อย');
+                }
+            });
+        }
+        // ── Sub-tasks ────────────────────────────────────────────────
+        function addSubTask(taskId) {
+            event.stopPropagation();
+            const input = document.getElementById(`sub-input-${taskId}`);
+            const text = (input.value || '').trim();
+            if (!text) return;
+            const task = ALL_TASKS.find(t => t.id === taskId);
+            if (!task) return;
+            if (!task.subTasks) task.subTasks = [];
+            task.subTasks.push({ text, done: false });
+            input.value = '';
+            addLog(taskId, 'Add SubTask', '—', text);
+            // Re-render just this card's subtask section without collapsing
+            renderSubTasks(taskId);
+        }
+
+        function toggleSubTask(taskId, idx) {
+            event.stopPropagation();
+            const task = ALL_TASKS.find(t => t.id === taskId);
+            if (!task || !task.subTasks) return;
+
+            // เปลี่ยนสถานะงานย่อย
+            task.subTasks[idx].done = !task.subTasks[idx].done;
+
+            // --- LOGIC: Smart Sub-task Sync ---
+            const total = task.subTasks.length;
+            const doneCount = task.subTasks.filter(s => s.done).length;
+
+            if (total > 0 && doneCount === total) {
+                // ถ้าทำครบทุกข้อ และสถานะยังไม่ใช่ Done/Review ให้ขยับเป็น Review
+                if (task.status !== 'done' && task.status !== 'review') {
+                    const oldStatus = task.status;
+                    task.status = 'review';
+                    addLog(taskId, 'Auto-Progress', oldStatus, 'review');
+                    showToast('งานย่อยครบแล้ว! เปลี่ยนสถานะเป็น Review อัตโนมัติ 🚀');
+                }
+            }
+
+            // บันทึก Log และ Render UI ใหม่
+            addLog(taskId, 'SubTask Toggle', '—', task.subTasks[idx].text + (task.subTasks[idx].done ? ' ✓' : ' ✗'));
+            renderSubTasks(taskId);
+            render(); // เพื่ออัปเดต Badge สถานะบน Card หลัก
+
+            // บันทึกข้อมูลลง Google Sheets ทันที
+            syncTaskToServer(task);
+        }
+
+        // 2. ฟังก์ชันสำหรับส่งข้อมูลเฉพาะ Task นั้นๆ ขึ้น Backend (Surgical Sync)
+        function syncTaskToServer(task) {
+            fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors', // เนื่องจากเป็น GAS Web App
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'save',
+                    task: task
+                })
+            }).then(() => {
+                console.log(`Task ${task.id} synced.`);
+            }).catch(err => {
+                showToast('Sync ไม่สำเร็จ: ' + err.message, true);
+            });
+        }
+
+        function deleteSubTask(taskId, idx) {
+            event.stopPropagation();
+            const task = ALL_TASKS.find(t => t.id === taskId);
+            if (!task || !task.subTasks) return;
+            const removed = task.subTasks.splice(idx, 1);
+            addLog(taskId, 'Del SubTask', removed[0]?.text || '—', '—');
+            renderSubTasks(taskId);
+        }
+
+        function renderSubTasks(taskId) {
+            const container = document.getElementById(`subtasks-${taskId}`);
+            if (!container) return;
+            const task = ALL_TASKS.find(t => t.id === taskId);
+            if (!task) return;
+            container.innerHTML = buildSubTasksHtml(task);
+        }
+
+        function buildSubTasksHtml(t) {
+            const subs = t.subTasks || [];
+            const doneCount = subs.filter(s => s.done).length;
+            const pct = subs.length ? Math.round((doneCount / subs.length) * 100) : 0;
+            const progressBar = subs.length ? `<div class="subtask-progress-bar"><div class="subtask-progress-fill" style="width:${pct}%"></div></div><span style="font-size:10px;color:var(--text3);font-family:var(--mono)">${doneCount}/${subs.length}</span>` : '';
+            const items = subs.map((s, i) =>
+                `<div class="subtask-item">
+          <input type="checkbox" ${s.done ? 'checked' : ''} onclick="toggleSubTask('${t.id}',${i})">
+          <span class="subtask-text${s.done ? ' done' : ''}">${escHtml(s.text)}</span>
+          <button class="subtask-del" onclick="deleteSubTask('${t.id}',${i})" title="ลบ">✕</button>
+        </div>`
+            ).join('');
+            return `<div class="subtasks-label">Sub-tasks ${progressBar}</div>
+        ${items}
+        <div class="subtask-add-row">
+          <input type="text" class="subtask-add-input" id="sub-input-${t.id}" placeholder="เพิ่มงานย่อย..." onkeydown="if(event.key==='Enter')addSubTask('${t.id}')">
+          <button class="subtask-add-btn" onclick="addSubTask('${t.id}')">+ เพิ่ม</button>
+        </div>`;
+        }
+
+        // ── Filtering ─────────────────────────────────────────────────
+        function getFiltered() {
+            let tasks = [...ALL_TASKS];
+
+            if (isSortedByDate) {
+                // 1. กรณีเปิดโหมด: เรียงตามวันที่อย่างเคร่งครัด (งานที่ไม่มีวันที่จะถูกย้ายไปล่างสุด)
+                tasks.sort((a, b) => {
+                    const da = parseDeadline(a.deadline);
+                    const db = parseDeadline(b.deadline);
+                    if (!da && !db) return (orderMap[a.id] ?? 0) - (orderMap[b.id] ?? 0);
+                    if (!da) return 1;
+                    if (!db) return -1;
+                    return da - db;
+                });
+            } else {
+                // 2. โหมดปกติ: เรียงตาม Priority และ ลำดับการลากวาง (Default)
+                const priorityOrder = { '1-urgent': 0, '2-high': 1, '3-medium': 2, '4-low': 3, '': 4 };
+                tasks.sort((a, b) => {
+                    const po = (priorityOrder[a.priority || ''] ?? 4) - (priorityOrder[b.priority || ''] ?? 4);
+                    if (po !== 0) return po;
+                    return (orderMap[a.id] ?? 0) - (orderMap[b.id] ?? 0);
+                });
+            }
+
+            // ทำการ Filter ข้อมูลตามเงื่อนไขอื่นต่อ...
+            if (activeFilter.type === 'phase' && activeFilter.value !== 'all')
+                tasks = tasks.filter(t => t.phase === activeFilter.value);
+            if (activeFilter.type === 'status') tasks = tasks.filter(t => t.status === activeFilter.value);
+            if (activeFilter.type === 'assignee') tasks = tasks.filter(t => t.assignee === activeFilter.value);
+            if (activeFilter.type === 'priority') tasks = tasks.filter(t => (t.priority || '3-medium') === activeFilter.value);
+            if (activeFilter.type === 'blocker') tasks = tasks.filter(t => t.isBlocker === true || t.isBlocker === 'TRUE');
+            if (activeTechFilter) tasks = tasks.filter(t => (t.tech || []).includes(activeTechFilter));
+            if (searchQuery) {
+                const q = searchQuery.toLowerCase();
+                tasks = tasks.filter(t =>
+                    t.name.toLowerCase().includes(q) ||
+                    (t.detail || []).some(d => d.toLowerCase().includes(q)) ||
+                    (t.tech || []).some(t2 => t2.toLowerCase().includes(q)) ||
+                    (t.assignee || '').toLowerCase().includes(q)
+                );
+            }
+            return tasks;
+        }
+
+        function setFilter(type, value, el) {
+            activeFilter = { type, value };
+            searchQuery = '';
+            document.getElementById('search-input').value = '';
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if (el) el.classList.add('active');
+            const titles = {
+                phase_all: 'งานทั้งหมด', phase_p1: 'Phase 1 — รับสมัคร', phase_p2: 'Phase 2 — รอบ 0',
+                phase_p3: 'Phase 3 — KKUEXAM', phase_p4: 'Phase 4 — วันงาน',
+                status_done: '✅ Done', status_review: '🔍 Review', status_progress: '🔄 In Progress',
+                status_todo: '📋 To Do', status_notyet: '⏳ Not Yet',
+                priority_1_urgent: '🔴 Urgent', priority_2_high: '🟠 High', priority_3_medium: '🟡 Medium', priority_4_low: '🔵 Low',
+            };
+            const key = type + '_' + value.replace(/-/g, '_');
+            document.getElementById('topbar-title').textContent = titles[key] || (type === 'assignee' ? value : 'งานทั้งหมด');
+
+            // บังคับกลับมาหน้า Board ทันที และซ่อน Timeline ทั้งสองแบบ
+            currentView = 'tasks';
+            const tasks = document.getElementById('tasks-panel');
+            const timeline = document.getElementById('timeline-panel');
+            const visual = document.getElementById('visual-timeline-panel');
+
+            if (tasks) tasks.classList.remove('hidden');
+            if (timeline) timeline.classList.remove('visible');
+            if (visual) visual.classList.remove('visible');
+
+            document.getElementById('btn-split').style.display = '';
+            document.getElementById('btn-sort-date').style.display = '';
+            render();
+        }
+
+        function clearFilters() {
+            activeTechFilter = '';
+            setFilter('phase', 'all', document.getElementById('nav-all'));
+            document.getElementById('nav-all').classList.add('active');
+            renderTechFilter();
+        }
+
+        function onSearch(q) { searchQuery = q; render(); }
+
+        // ── Render ────────────────────────────────────────────────────
+        function render() {
+            updateCounts();
+            updateAssigneeNav();
+            renderProgressBars();
+            renderTechFilter();
+
+            if (currentView === 'flow') {
+                renderVisualTimeline();
+                return;
+            }
+
+            if (currentView === 'timeline') {
+                renderTimeline();
+                return;
+            }
+
+            const tasks = getFiltered();
+            const container = document.getElementById('task-container');
+
+            const hasExtra = activeTechFilter || searchQuery || (activeFilter.type !== 'phase' || activeFilter.value !== 'all');
+            document.getElementById('filter-clear').style.display = hasExtra ? 'inline-flex' : 'none';
+
+            if (!tasks.length) {
+                container.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">ไม่พบงานที่ตรงกัน</div></div>`;
+                return;
+            }
+
+            if (activeFilter.type === 'phase' && activeFilter.value !== 'all') {
+                const groups = {};
+                tasks.forEach(t => { (groups[t.group] = groups[t.group] || []).push(t); });
+                container.innerHTML = Object.entries(groups).map(([g, ts]) =>
+                    `<div class="group-label">${g}</div>` + ts.map(taskCard).join('')
+                ).join('');
+            } else {
+                const phases = {};
+                tasks.forEach(t => { (phases[t.phase] = phases[t.phase] || []).push(t); });
+                container.innerHTML = Object.entries(phases).map(([p, ts]) => {
+                    const meta = PHASE_META[p] || { label: p, color: '#888' };
+                    return `<div class="group-label" style="color:${meta.color}">${meta.label}</div>` + ts.map(taskCard).join('');
+                }).join('');
+            }
+
+            // Restore expanded state
+            expandedIds.forEach(id => {
+                const el = document.querySelector(`.task-card[data-id="${id}"]`);
+                if (el) el.classList.add('expanded');
+            });
+
+            // Init drag & drop after DOM is settled
+            initSortable();
+        }
+
+        // ── Task card ─────────────────────────────────────────────────
+        function taskCard(t) {
+            const sm = STATUS_META[t.status] || { label: t.status, icon: '' };
+            const pri = t.priority || '3-medium';
+            const pm = PRIORITY_META[pri] || {};
+            const isBlocker = t.isBlocker === true || t.isBlocker === 'TRUE';
+            const phaseColor = PHASE_COLORS[t.phase] || 'var(--border)';
+            const details = (t.detail || []).map(d => `<li>${escHtml(d)}</li>`).join('');
+            const techPills = (t.tech || []).filter(Boolean).map(tech => `<span class="tech-pill">${escHtml(tech)}</span>`).join('');
+
+            let depWarn = '';
+            if (t.dependsOn) {
+                const dep = ALL_TASKS.find(x => x.id === t.dependsOn);
+                if (dep && dep.status !== 'done') {
+                    depWarn = `<div class="dep-warning">⚠️ รอ: <strong>${escHtml(dep.name)}</strong> (${STATUS_META[dep.status]?.label || dep.status})</div>`;
+                }
+            }
+
+            const commentHtml = t.comment ? `<div class="comment-box"><span style="color:var(--text3);font-size:11px">💬 </span><span class="comment-text">${escHtml(t.comment)}</span></div>` : '';
+            const urlChip = t.url ? `<a class="chip-url" href="${escHtml(t.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔗 เปิด Resource</a>` : '';
+
+            const assigneeOpts = ASSIGNEES.map(a => `<option${a === t.assignee ? ' selected' : ''}>${escHtml(a)}</option>`).join('');
+            const assigneeSwap = `<select class="assignee-dropdown" onclick="event.stopPropagation()" onchange="quickAssign('${t.id}',this.value)">${assigneeOpts}</select>`;
+
+            // Sub-tasks summary chip (in collapsed view)
+            const subs = t.subTasks || [];
+            const subsDone = subs.filter(s => s.done).length;
+            const subChip = subs.length ? `<span class="chip" style="background:var(--surface2);color:var(--text3);font-size:10px">☑ ${subsDone}/${subs.length}</span>` : '';
+            const dragHandleHtml = isSortedByDate ? '' : '<span class="drag-handle" onclick="event.stopPropagation()">⠿</span>';
+
+            return `<div class="task-card${isBlocker ? ' blocker-card' : ''}" 
+               data-id="${t.id}" 
+               style="border-left: 5px solid ${phaseColor}" 
+               onclick="toggleCard(this,'${t.id}')">
+  <div class="task-row">
+    ${dragHandleHtml}
+    <div class="status-dot s-${t.status}"></div>
+    ${isBlocker ? '<span title="Blocker" style="font-size:12px">🔴</span>' : ''}
+    <span class="task-name">${escHtml(t.name)}</span>
+    <div class="task-chips">
+      <span class="chip ${pm.cls || ''}">${pm.icon || ''} ${pm.label || ''}</span>
+      <span class="chip c-${t.status}">${sm.icon} ${sm.label}</span>
+      ${subChip}
+      ${t.assignee ? `<span class="chip-assignee">${escHtml(t.assignee)}</span>` : ''}
+      ${t.deadline ? `<span class="chip-deadline">${formatThaiDate(t.deadline)}</span>` : ''}      ${urlChip}
+    </div>
+    <span class="chevron">▾</span>
+  </div>
+  <div class="task-detail-wrap">
+    ${depWarn}
+    ${details ? `<ul class="detail-list">${details}</ul>` : ''}
+    ${techPills ? `<div class="tech-pills">${techPills}</div>` : ''}
+    ${commentHtml}
+    <!-- Sub-tasks section -->
+    <div class="subtasks-section" id="subtasks-${t.id}" onclick="event.stopPropagation()">
+      ${buildSubTasksHtml(t)}
+    </div>
+    <div class="card-actions">
+      <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();editTask('${t.id}')">✎ แก้ไข</button>
+      <span style="font-size:11px;color:var(--text3);margin-left:4px">ผู้รับผิดชอบ:</span>
+      ${assigneeSwap}
+      <span style="font-size:11px;color:var(--text3);margin-left:auto;font-family:var(--mono)">${t.id}</span>
+    </div>
+  </div>
+</div>`;
+        }
+
+        function quickAssign(id, assignee) {
+            const task = ALL_TASKS.find(t => t.id === id);
+            if (!task) return;
+            const old = task.assignee;
+            task.assignee = assignee;
+            addLog(id, 'Quick Assign', old, assignee);
+            showToast(`มอบหมาย ${id} → ${assignee} ✓`);
+            render();
+        }
+
+        // ── Counts ────────────────────────────────────────────────────
+        function updateCounts() {
+            const status = { done: 0, review: 0, progress: 0, todo: 0, notyet: 0 };
+            const phase = { p1: 0, p2: 0, p3: 0, p4: 0 };
+            const priority = { '1-urgent': 0, '2-high': 0, '3-medium': 0, '4-low': 0 };
+            let blockers = 0;
+            ALL_TASKS.forEach(t => {
+                if (status[t.status] !== undefined) status[t.status]++;
+                if (phase[t.phase] !== undefined) phase[t.phase]++;
+                const p = t.priority || '3-medium';
+                if (priority[p] !== undefined) priority[p]++;
+                if (t.isBlocker === true || t.isBlocker === 'TRUE') blockers++;
+            });
+            Object.entries(status).forEach(([k, v]) => { const el = document.getElementById('s-' + k); if (el) el.textContent = v; });
+            document.getElementById('cnt-all').textContent = ALL_TASKS.length;
+            Object.entries(phase).forEach(([k, v]) => { const el = document.getElementById('cnt-' + k); if (el) el.textContent = v; });
+            const bl = document.getElementById('cnt-blockers'); if (bl) bl.textContent = blockers;
+            const urgEl = document.getElementById('cnt-urg'); if (urgEl) urgEl.textContent = priority['1-urgent'];
+            const hiEl = document.getElementById('cnt-high'); if (hiEl) hiEl.textContent = priority['2-high'];
+            const medEl = document.getElementById('cnt-med'); if (medEl) medEl.textContent = priority['3-medium'];
+            const lowEl = document.getElementById('cnt-low'); if (lowEl) lowEl.textContent = priority['4-low'];
+        }
+
+        function updateAssigneeNav() {
+            const counts = {};
+            ALL_TASKS.forEach(t => { if (t.assignee) counts[t.assignee] = (counts[t.assignee] || 0) + 1; });
+            const nav = document.getElementById('assignee-nav');
+            nav.innerHTML = Object.entries(counts).map(([name, cnt]) => {
+                const meta = AVATAR_COLORS[name] || { bg: '#F0EDE8', color: '#5A5854' };
+                const initials = name.slice(0, 2).toUpperCase();
+                const isActive = activeFilter.type === 'assignee' && activeFilter.value === name;
+                return `<div class="assignee-item${isActive ? ' active' : ''}" onclick="setFilter('assignee','${name}',this)">
+      <div class="avatar-sm" style="background:${meta.bg};color:${meta.color}">${initials}</div>
+      ${escHtml(name)}
+      <span style="margin-left:auto;font-size:11px;font-family:var(--mono);color:var(--text3)">${cnt}</span>
+    </div>`;
+            }).join('');
+        }
+
+        // ── Card expand ───────────────────────────────────────────────
+        function toggleCard(el, id) {
+            if (event.target.closest('button,a,select,input')) return;
+            el.classList.toggle('expanded');
+            if (expandedIds.has(id)) expandedIds.delete(id); else expandedIds.add(id);
+        }
+
+        // ── Modal ─────────────────────────────────────────────────────
+        let editingId = null;
+        let tempSubTasks = [];
+
+        function populateDependsDropdown(excludeId) {
+            const select = document.getElementById('f-depends');
+            select.innerHTML = '<option value="">-- ไม่อ้างอิง --</option>';
+            ALL_TASKS.forEach(t => {
+                if (t.id === excludeId) return; // ป้องกันการอ้างอิงตัวเอง
+                const opt = document.createElement('option');
+                opt.value = t.id; // เบื้องหลังยังเก็บเป็น ID เพื่อบันทึกลง Database
+                opt.textContent = t.name; // แสดงผลเป็นชื่องาน
+                select.appendChild(opt);
+            });
+        }
+
+        function openModal() {
+            editingId = null;
+            document.getElementById('modal-title').textContent = 'เพิ่มงานใหม่';
+            document.getElementById('btn-delete').style.display = 'none';
+            populateDependsDropdown(null);
+            ['f-id', 'f-name', 'f-deadline', 'f-assignee', 'f-group', 'f-detail', 'f-tech', 'f-url', 'f-depends', 'f-comment', 'modal-subtask-input'].forEach(id => { document.getElementById(id).value = ''; });
+            document.getElementById('f-status').value = 'todo';
+            document.getElementById('f-priority').value = '3-medium';
+
+            tempSubTasks = [];
+            renderModalSubTasks();
+
+            document.getElementById('f-phase').value = activeFilter.type === 'phase' && activeFilter.value !== 'all' ? activeFilter.value : 'p1';
+            document.getElementById('f-blocker').checked = false;
+            document.getElementById('dep-warn-modal').classList.remove('visible');
+            document.getElementById('modal-backdrop').classList.add('open');
+            document.getElementById('f-name').focus();
+        }
+
+        function editTask(id) {
+            const t = ALL_TASKS.find(x => x.id === id);
+            if (!t) return;
+            editingId = id;
+            document.getElementById('modal-title').textContent = 'แก้ไขงาน';
+            document.getElementById('btn-delete').style.display = 'inline-flex';
+            document.getElementById('f-id').value = t.id;
+            document.getElementById('f-name').value = t.name;
+            document.getElementById('f-status').value = t.status;
+            document.getElementById('f-priority').value = t.priority || '3-medium';
+
+            // แก้ไขปัญหา: จัดการรูปแบบวันที่ให้เป็น YYYY-MM-DD เพื่อใส่ใน <input type="date">
+            let deadlineVal = t.deadline || '';
+            if (deadlineVal) {
+                const d = new Date(deadlineVal);
+                if (!isNaN(d.getTime())) {
+                    const y = d.getFullYear();
+                    const m = String(d.getMonth() + 1).padStart(2, '0');
+                    const day = String(d.getDate()).padStart(2, '0');
+                    deadlineVal = `${y}-${m}-${day}`;
+                }
+            }
+            document.getElementById('f-deadline').value = deadlineVal;
+
+            document.getElementById('f-assignee').value = t.assignee || '';
+            document.getElementById('f-phase').value = t.phase;
+            document.getElementById('f-group').value = t.group || '';
+            document.getElementById('f-detail').value = (t.detail || []).join('\n');
+            document.getElementById('f-tech').value = (t.tech || []).join(', ');
+            document.getElementById('f-url').value = t.url || '';
+
+            populateDependsDropdown(t.id);
+            document.getElementById('f-depends').value = t.dependsOn || '';
+            document.getElementById('f-comment').value = t.comment || '';
+            document.getElementById('f-blocker').checked = t.isBlocker === true || t.isBlocker === 'TRUE';
+
+            document.getElementById('dep-warn-modal').classList.remove('visible');
+            if (t.dependsOn) checkDependency(t.dependsOn);
+
+            document.getElementById('modal-subtask-input').value = '';
+            tempSubTasks = JSON.parse(JSON.stringify(t.subTasks || [])); // Clone ข้อมูล
+            renderModalSubTasks();
+
+            document.getElementById('modal-backdrop').classList.add('open');
+        }
+
+        function checkDependency(depId) {
+            const warn = document.getElementById('dep-warn-modal');
+            if (!depId) { warn.classList.remove('visible'); return; }
+            const dep = ALL_TASKS.find(t => t.id === depId);
+            if (dep && dep.status !== 'done') {
+                document.getElementById('dep-warn-id').textContent = dep.name;
+                warn.classList.add('visible');
+            } else { warn.classList.remove('visible'); }
+        }
+
+        function closeModal() { document.getElementById('modal-backdrop').classList.remove('open'); }
+        function handleBackdropClick(e) { if (e.target === document.getElementById('modal-backdrop')) closeModal(); }
+
+        // ── Modal Sub-tasks CRUD ──
+        function renderModalSubTasks() {
+            const container = document.getElementById('modal-subtasks-list');
+            if (tempSubTasks.length === 0) {
+                container.innerHTML = '<div style="font-size:12px;color:var(--text3);font-style:italic">ไม่มีงานย่อย</div>';
+                return;
+            }
+            container.innerHTML = tempSubTasks.map((st, i) => `
+        <div style="display:flex;align-items:center;gap:8px;background:var(--surface2);padding:6px 10px;border-radius:var(--radius);border:1px solid var(--border);">
+          <input type="checkbox" style="width:14px;height:14px;margin:0;flex-shrink:0;" ${st.done ? 'checked' : ''} onchange="toggleModalSubTask(${i})">
+          <input type="text" value="${escHtml(st.text)}" oninput="updateModalSubTaskText(${i}, this.value)" style="flex:1;border:none;background:transparent;padding:0;font-size:13px;outline:none;box-shadow:none;color:${st.done ? 'var(--text3)' : 'var(--text)'};text-decoration:${st.done ? 'line-through' : 'none'};">
+          <button type="button" class="subtask-del" style="opacity:1;padding:2px 6px;" onclick="deleteModalSubTask(${i})" title="ลบ">✕</button>
+        </div>
+      `).join('');
+        }
+
+        function addModalSubTask() {
+            const input = document.getElementById('modal-subtask-input');
+            const text = input.value.trim();
+            if (!text) return;
+            tempSubTasks.push({ text, done: false });
+            input.value = '';
+            renderModalSubTasks();
+        }
+
+        function toggleModalSubTask(idx) {
+            tempSubTasks[idx].done = !tempSubTasks[idx].done;
+            renderModalSubTasks();
+        }
+
+        function updateModalSubTaskText(idx, val) {
+            tempSubTasks[idx].text = val; // อัปเดตข้อความทันทีที่พิมพ์
+        }
+
+        function deleteModalSubTask(idx) {
+            tempSubTasks.splice(idx, 1);
+            renderModalSubTasks();
+        }
+
+        function handleSave() {
+            const name = document.getElementById('f-name').value.trim();
+            if (!name) { showToast('กรุณาระบุชื่องาน', true); return; }
+
+            const oldTask = editingId ? ALL_TASKS.find(t => t.id === editingId) : null;
+            const task = {
+                id: document.getElementById('f-id').value || ('t' + Date.now()),
+                name,
+                status: document.getElementById('f-status').value,
+                priority: document.getElementById('f-priority').value,
+                deadline: document.getElementById('f-deadline').value,
+                assignee: document.getElementById('f-assignee').value.trim(),
+                phase: document.getElementById('f-phase').value,
+                group: document.getElementById('f-group').value.trim(),
+                detail: document.getElementById('f-detail').value.split('\n').map(s => s.trim()).filter(Boolean),
+                tech: document.getElementById('f-tech').value.split(',').map(s => s.trim()).filter(Boolean),
+                url: document.getElementById('f-url').value.trim(),
+                dependsOn: document.getElementById('f-depends').value,
+                comment: document.getElementById('f-comment').value.trim(),
+                isBlocker: document.getElementById('f-blocker').checked,
+                subTasks: tempSubTasks,
+            };
+
+            // Optimistic Update
+            if (oldTask) Object.assign(oldTask, task);
+            else ALL_TASKS.push(task);
+
+            render();
+            closeModal();
+
+            showToast('กำลังบันทึกลงฐานข้อมูล...');
+            fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'save', task: task })
+            }).then(() => {
+                showToast('บันทึกสำเร็จ ✓');
+                setTimeout(loadData, 1000);
+            }).catch(err => {
+                showToast('Error: ' + err.message, true);
+            });
+        }
+
+        function handleDelete() {
+            const id = document.getElementById('f-id').value;
+            if (!id || !confirm('ยืนยันการลบงานนี้?')) return;
+
+            showToast('กำลังลบข้อมูล...');
+            fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete', id: id })
+            }).then(() => {
+                ALL_TASKS = ALL_TASKS.filter(t => t.id !== id);
+                render();
+                closeModal();
+                showToast('ลบงานเรียบร้อย');
+            });
+        }
+        // ── Logs ──────────────────────────────────────────────────────
+        function addLog(taskId, action, oldVal, newVal) {
+            LOCAL_LOGS.unshift({ ts: new Date().toLocaleString('th-TH'), taskId, user: 'Local', action, old: oldVal || '—', new: newVal || '—' });
+        }
+
+        function openLogsModal() {
+            const tbody = document.getElementById('logs-body');
+            if (!LOCAL_LOGS.length) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:24px">ยังไม่มี Activity Log</td></tr>';
+            } else {
+                tbody.innerHTML = LOCAL_LOGS.map(l => `<tr>
+      <td style="white-space:nowrap">${escHtml(l.ts)}</td>
+      <td><span style="font-family:var(--mono)">${escHtml(l.taskId)}</span></td>
+      <td>${escHtml(l.user)}</td>
+      <td><span class="log-action">${escHtml(l.action)}</span></td>
+      <td><span style="color:var(--notyet)">${escHtml(l.old)}</span> → <span style="color:var(--done)">${escHtml(l.new)}</span></td>
+    </tr>`).join('');
+            }
+            document.getElementById('logs-backdrop').classList.add('open');
+        }
+
+        function closeLogsModal() { document.getElementById('logs-backdrop').classList.remove('open'); }
+
+        // ── Toast ─────────────────────────────────────────────────────
+        let toastTimer;
+        function showToast(msg, isError = false) {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.className = 'show' + (isError ? ' error' : '');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { el.className = ''; }, 3000);
+        }
+
+        // ── Helpers ───────────────────────────────────────────────────
+        function escHtml(s) {
+            return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function formatThaiDate(isoString) {
+            if (!isoString) return '';
+            const d = new Date(isoString);
+            if (isNaN(d.getTime())) return escHtml(isoString); // ถ้าไม่ใช่วันที่มาตรฐาน ให้คืนค่าข้อความเดิม
+            return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' });
+        }
+
+        // ── Demo data ─────────────────────────────────────────────────
+        const DEMO_TASKS = [
+            { id: 't1', name: 'ประสานงาน ComArt ขอ Asset', status: 'done', priority: '3-medium', deadline: '12 พ.ค.', assignee: 'Panas', phase: 'p1', group: 'prep', detail: ['Banner Google Form (1600×400 px)', 'Logo PNG พื้นหลังโปร่งใส', 'รหัสสีหลัก (HEX Codes)'], tech: [], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [{ text: 'ส่ง Brief ให้ ComArt', done: true }, { text: 'รับไฟล์ Banner + Logo', done: true }, { text: 'ตรวจสอบขนาดและสี', done: true }] },
+            { id: 't2', name: 'Template แจ้งปัญหาผ่าน Line Note', status: 'done', priority: '4-low', deadline: '6 พ.ค.', assignee: 'Panas', phase: 'p1', group: 'prep', detail: ['รูปแบบ: [ปัญหา] / Email / ชื่อทีม / ประเภทโควตา'], tech: [], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
+            { id: 't3', name: 'ประสานงานฝ่ายทะเบียน', status: 'review', priority: '2-high', deadline: '11 พ.ค.', assignee: 'Panas', phase: 'p1', group: 'prep', detail: ['ตรวจคำถาม Google Form รับสมัคร', 'ตรวจ Template เมลแจ้งเอกสาร', 'ตรวจ Template เมลยืนยันสิทธิ์'], tech: [], url: '', dependsOn: '', comment: 'รอฝ่ายทะเบียน confirm', isBlocker: false, subTasks: [{ text: 'ส่ง Draft Form ให้ทะเบียน', done: true }, { text: 'รอ Feedback', done: false }] },
+            { id: 't4', name: 'Google Form รับสมัครรอบแรก', status: 'progress', priority: '1-urgent', deadline: '26 พ.ค.', assignee: 'Panas', phase: 'p1', group: 'dev', detail: ['ตั้งค่า Limit 1 Response / Validation เบอร์โทร', 'Required บนไฟล์สำคัญ', 'ปรับ Theme จาก Art ที่ ComArt ทำ'], tech: ['Google Forms'], url: 'https://forms.google.com', dependsOn: 't1', comment: '', isBlocker: true, subTasks: [{ text: 'สร้าง Form โครงสร้างหลัก', done: true }, { text: 'ตั้งค่า Validation', done: true }, { text: 'ใส่ Theme/Asset จาก ComArt', done: false }, { text: 'ทดสอบ Submit ครบ', done: false }] },
+            { id: 't5', name: 'Google Form ส่งเอกสารเพิ่มเติม', status: 'review', priority: '2-high', deadline: '26 เม.ย.', assignee: 'Panas', phase: 'p1', group: 'dev', detail: ['ช่องอ้างอิง Email หัวหน้าทีม', 'รับเฉพาะไฟล์ที่ต้องแก้'], tech: ['Google Forms', 'GAS'], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
+            { id: 't6', name: 'Google Form ยืนยันสิทธิ์', status: 'progress', priority: '1-urgent', deadline: '26 พ.ค.', assignee: 'Panas', phase: 'p1', group: 'dev', detail: ['กรอก Team ID, ไซส์เสื้อ, แนบสลิป', 'ข้อมูลส่งต่อฝ่ายเหรัญญิก + ทะเบียน'], tech: ['Google Forms'], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
+            { id: 't7', name: 'ระบบเว็บตรวจสอบเอกสาร (Staff)', status: 'review', priority: '2-high', deadline: '1 มิ.ย.', assignee: 'Panas', phase: 'p1', group: 'check', detail: ['Login เฉพาะ @kku.ac.th', 'ดูเอกสาร PDF ใน Iframe', 'ตั้งสถานะ + พิมพ์ Feedback', 'Real-time Sync ผ่าน Firebase'], tech: ['Firebase Auth', 'Firebase DB', 'GAS', 'Tailwind'], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
+            { id: 't8', name: 'Looker Studio เช็คสถานะการสมัคร', status: 'progress', priority: '3-medium', deadline: '1 มิ.ย.', assignee: 'natchanon.te', phase: 'p1', group: 'check', detail: ['กรอก Email ดูสถานะ 3 เอกสาร', 'แสดง Feedback จากทะเบียน'], tech: ['Looker Studio', 'Google Sheets'], url: 'https://lookerstudio.google.com', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
+            { id: 't9', name: 'ประสานงานฝ่ายวิชาการ (รอบ 0)', status: 'progress', priority: '2-high', deadline: '29 พ.ค.', assignee: 'Panas', phase: 'p2', group: 'prep', detail: ['สรุปจำนวนข้อสอบ เกณฑ์คะแนน', 'เตรียม Answer Key'], tech: [], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [{ text: 'ประชุมฝ่ายวิชาการ', done: true }, { text: 'รับสรุปจำนวนข้อสอบ', done: false }, { text: 'ตรวจ Answer Key', done: false }] },
+            { id: 't10', name: 'สร้าง Google Form ข้อสอบรอบ 0', status: 'notyet', priority: '1-urgent', deadline: 'รอวิชาการ 20 ก.ค.', assignee: 'Panas', phase: 'p2', group: 'prep', detail: ['Quiz Mode, Login Gmail หัวหน้าทีม', 'Limit 1 Response', 'Release Grades: Manual'], tech: ['Google Forms'], url: '', dependsOn: 't9', comment: 'รอวิชาการส่งข้อสอบก่อน', isBlocker: true, subTasks: [] },
+            { id: 't11', name: 'ระบบส่งเมลลิงก์ข้อสอบ', status: 'review', priority: '2-high', deadline: '15 มิ.ย.', assignee: 'Prechakorn', phase: 'p2', group: 'prep', detail: ['Bulk Sending ผ่าน Apps Script', 'ดึงเฉพาะทีมสถานะสมบูรณ์', 'Log ป้องกันส่งซ้ำ'], tech: ['GAS', 'GmailApp'], url: '', dependsOn: 't10', comment: '', isBlocker: false, subTasks: [] },
+            { id: 't12', name: 'ระบบคัดกรอง 100 ทีม (Round 0)', status: 'todo', priority: '1-urgent', deadline: '26 พ.ค.', assignee: 'Panas', phase: 'p2', group: 'score', detail: ['Auto Score MCQ + Manual (SAQ, Essay)', 'โควตาทีมโรงเรียน 75 + ผสม 25', 'Tie-break: คะแนน Essay → เวลาส่ง'], tech: ['Google Sheets', 'GAS'], url: '', dependsOn: '', comment: '', isBlocker: true, subTasks: [] },
+            { id: 't13', name: 'ระบบส่งเมลประกาศผล + ยืนยันสิทธิ์', status: 'todo', priority: '2-high', deadline: '15 มิ.ย.', assignee: 'Prechakorn', phase: 'p2', group: 'score', detail: ['ส่งเมลยินดี + ลิงก์ยืนยันสิทธิ์ 100 ทีม'], tech: ['GAS', 'GmailApp'], url: '', dependsOn: 't12', comment: '', isBlocker: false, subTasks: [] },
+            { id: 't14', name: 'ส่งเมลเรียกทีมสำรอง', status: 'done', priority: '3-medium', deadline: '15 มิ.ย.', assignee: 'Prechakorn', phase: 'p2', group: 'score', detail: ['แจ้งทีมสำรองกรณีตัวจริงสละสิทธิ์'], tech: ['GAS', 'GmailApp'], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
+            { id: 't15', name: 'Generate Student ID + Import KKUEXAM', status: 'todo', priority: '2-high', deadline: 'ต.ค. 69', assignee: 'Panas', phase: 'p3', group: 'setup', detail: ['MQ001–100-1/2/3 (300 คน)', 'สร้าง Username/Password', 'นำเข้าระบบ KKUEXAM'], tech: ['KKUEXAM', 'Google Sheets'], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
+            { id: 't16', name: 'ระบบคัดกรอง Round 1 → Round 2', status: 'todo', priority: '1-urgent', deadline: '26 พ.ค.', assignee: 'Panas', phase: 'p4', group: 'r1', detail: ['ดึง Raw Score → SORT คะแนนเฉลี่ย', 'Tag 40 ทีม Spot Test / 60 ทีม A/B/C', 'Tie-break: Unseen → เวลา'], tech: ['Google Sheets', 'GAS'], url: '', dependsOn: 't15', comment: '', isBlocker: true, subTasks: [] },
+            { id: 't17', name: 'ระบบกรอกคะแนน Spot Test (รอบ 2)', status: 'done', priority: '2-high', deadline: '26 พ.ค.', assignee: 'Panas', phase: 'p4', group: 'r2', detail: ['Web App คีย์คะแนน 35 สถานี Real-time'], tech: ['GAS', 'Google Sheets'], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
+            { id: 't18', name: 'Dashboard ประกาศฐานกิจกรรม (Looker)', status: 'todo', priority: '2-high', deadline: '21 ก.ย.', assignee: 'natchanon.te', phase: 'p4', group: 'r3', detail: ['QR Code → Team ID → ดูผลรอบ 1/2', 'Mobile Portrait 768×1366'], tech: ['Looker Studio', 'Google Sheets'], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
+            { id: 't19', name: 'ระบบคะแนน Game Show (รอบ 3)', status: 'notyet', priority: '3-medium', deadline: 'รอประชุม', assignee: 'Panas', phase: 'p4', group: 'r3', detail: ['รอสรุปกติกาจากวิชาการ/กิจกรรม', 'หน้าจอ Real-time Scoreboard'], tech: [], url: '', dependsOn: '', comment: 'รอประชุมทีมก่อน', isBlocker: false, subTasks: [] },
+        ];
+
+        // Show split view button only in board/blockers view
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('btn-split').style.display = '';
+        });
+    </script>
+</body>
+
+</html>
