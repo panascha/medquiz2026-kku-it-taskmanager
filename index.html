@@ -114,7 +114,7 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            min-width: 0
+            min-width: 380px
         }
 
         /* ── Side Timeline Panel ── */
@@ -1779,20 +1779,19 @@
                         <!-- Rendered by JS -->
                     </div>
                 </div>
-            </div>
 
-            <!-- Side Timeline Panel -->
-            <div class="side-timeline-panel" id="side-timeline-panel">
-                <div class="side-tl-header">
-                    <span>📅 กำหนดการ</span>
-                    <button class="btn-icon" style="border:none;padding:4px 6px;font-size:14px"
-                        onclick="toggleSplitView()" title="ปิด">✕</button>
+                <!-- Side Timeline Panel -->
+                <div class="side-timeline-panel" id="side-timeline-panel">
+                    <div class="side-tl-header">
+                        <span>📅 กำหนดการ</span>
+                        <button class="btn-icon" style="border:none;padding:4px 6px;font-size:14px"
+                            onclick="toggleSplitView()" title="ปิด">✕</button>
+                    </div>
+                    <div class="side-tl-body" id="side-tl-body"></div>
                 </div>
-                <div class="side-tl-body" id="side-tl-body"></div>
-            </div>
 
-        </div><!-- /main-body -->
-    </div><!-- /main -->
+            </div><!-- /main-body -->
+        </div><!-- /main -->
     </div><!-- /shell -->
 
     <!-- ── Edit/Add Modal ── -->
@@ -2070,40 +2069,285 @@
         function toggleSplitView() {
             splitViewOpen = !splitViewOpen;
             const panel = document.getElementById('side-timeline-panel');
+            const tasksCol = document.querySelector('.tasks-column');
             const btn = document.getElementById('btn-split');
             if (splitViewOpen) {
                 panel.classList.add('open');
+                if (tasksCol) tasksCol.style.display = 'none';
                 btn.classList.add('active');
-                btn.title = 'ปิด Split View';
+                btn.title = 'ปิดกำหนดการ';
                 renderSideTimeline();
             } else {
                 panel.classList.remove('open');
+                if (tasksCol) tasksCol.style.display = '';
                 btn.classList.remove('active');
-                btn.title = 'Split View: Timeline';
+                btn.title = 'กำหนดการ';
             }
         }
-
+        function getEventPhase(activity) {
+            const act = activity.toLowerCase();
+            if (act.includes('สมัคร')) return 'p1';
+            if (act.includes('รอบคัดเลือก') || act.includes('ตัวจริง') || act.includes('สำรอง') || act.includes('สิทธิ์แข่งขัน')) return 'p2';
+            if (act.includes('สิทธิ์แข่งขัน')) return 'p3';
+            if (act.includes('วันแข่งขัน')) return 'p4';
+            return 'p1'; // fallback
+        }
         function renderSideTimeline() {
+            if (!document.getElementById('side-tl-custom-style')) {
+                const style = document.createElement('style');
+                style.id = 'side-tl-custom-style';
+                style.innerHTML = `
+          .side-timeline-panel.open {
+    flex: 1 !important;          /* เดิม width: 920px */
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    background: var(--surface) !important;
+}
+          #side-tl-body {
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 8px !important;
+            padding: 8px !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            flex: 1 !important;
+            min-height: 0 !important;
+            background: var(--bg) !important;
+            box-sizing: border-box !important;
+          }
+            .tl-month-sep {
+    font-size: 10px; font-weight: 600; color: var(--text2);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 3px 8px;
+    text-align: center; margin: 4px 0 2px; flex-shrink: 0;
+    letter-spacing: .03em;
+}
+          .tl-phase-col {
+            flex: 1 !important;
+            min-width: 200px !important;
+            max-width: none !important;
+            display: flex !important;
+            flex-direction: column !important;
+            background: var(--surface) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: var(--radius-lg) !important;
+            overflow: hidden !important;
+            min-height: 0 !important;
+            box-shadow: var(--shadow) !important;
+            box-sizing: border-box !important;
+          }
+          .tl-phase-col-header {
+            padding: 9px 11px !important;
+            font-weight: 600 !important;
+            font-size: 11px !important;
+            text-transform: uppercase !important;
+            color: #fff !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            flex-shrink: 0 !important;
+          }
+          .tl-phase-col-body {
+            flex: 1 !important;
+            overflow-y: auto !important;
+            padding: 7px 7px 20px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 5px !important;
+            min-height: 0 !important;
+            box-sizing: border-box !important;
+          }
+          .tl-phase-col-body::-webkit-scrollbar { width: 4px !important; }
+          .tl-phase-col-body::-webkit-scrollbar-track { background: transparent !important; }
+          .tl-phase-col-body::-webkit-scrollbar-thumb { background: var(--border2) !important; border-radius: 99px !important; }
+          .tl-card {
+            background: var(--surface2) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: var(--radius) !important;
+            padding: 8px 10px !important;
+            transition: box-shadow .15s, transform .1s !important;
+          }
+          .tl-card:hover { box-shadow: 0 3px 8px rgba(0,0,0,.07) !important; transform: translateY(-1px) !important; }
+          .tl-card.tl-overdue { border-left: 3px solid #B83232 !important; background: #FFF9F9 !important; }
+          .tl-card.tl-due-soon { border-left: 3px solid #C05C00 !important; background: #FFFAF5 !important; }
+          body.dark .tl-card.tl-overdue { background: #2A1818 !important; }
+          body.dark .tl-card.tl-due-soon { background: #2A2010 !important; }
+          .tl-section-sep {
+            font-size: 9px; font-weight: 600; color: var(--text3);
+            text-transform: uppercase; letter-spacing: .07em;
+            padding: 7px 2px 2px; border-top: 1px solid var(--border); margin-top: 3px;
+          }
+          @media(max-width: 1100px) {
+            .side-timeline-panel.open {
+              width: 100% !important; position: fixed !important;
+              right: 0 !important; top: 0 !important; bottom: 0 !important; z-index: 200 !important;
+            }
+          }
+        `;
+                document.head.appendChild(style);
+            }
+
             const now = new Date();
-            const html = TIMELINE_EVENTS.map(ev => {
-                const start = new Date(ev.start);
-                const daysAway = Math.ceil((start - now) / 86400000);
-                let badgeClass = 'tl-badge-upcoming', badgeText = `${daysAway} วัน`;
-                if (ev.isMain) { badgeClass = 'tl-badge-main'; badgeText = daysAway > 0 ? `${daysAway} วัน 🏆` : 'ผ่านแล้ว'; }
-                else if (daysAway < 0) { badgeClass = 'tl-badge-past'; badgeText = 'ผ่านแล้ว'; }
-                else if (daysAway === 0) { badgeClass = 'tl-badge-today'; badgeText = 'วันนี้'; }
-                const fmtDate = d => new Date(d).toLocaleDateString('th-TH', { month: 'short', day: 'numeric' });
-                const dateStr = ev.end ? `${fmtDate(ev.start)} – ${fmtDate(ev.end)}` : fmtDate(ev.start);
-                return `<div class="tl-event-card${ev.isMain ? ' main-event' : ''}">
-          <div class="tl-event-name">${escHtml(ev.activity)}</div>
-          <div class="tl-event-date">${dateStr}</div>
-          <div class="tl-event-place">📍 ${escHtml(ev.place)}</div>
-          <span class="tl-days-badge ${badgeClass}">${badgeText}</span>
+            now.setHours(0, 0, 0, 0);
+
+            const PHASES = ['p1', 'p2', 'p3', 'p4'];
+            const PHASE_LABELS = {
+                p1: 'Phase 1 · รับสมัคร', p2: 'Phase 2 · รอบ 0',
+                p3: 'Phase 3 · KKUEXAM', p4: 'Phase 4 · วันงาน'
+            };
+            const fmtShort = d => d.toLocaleDateString('th-TH', { month: 'short', day: 'numeric' });
+
+            let html = '';
+
+            PHASES.forEach(p => {
+                const timedItems = [];
+                const untimedTasks = [];
+
+                // Timeline events สำหรับเฟสนี้
+                TIMELINE_EVENTS.forEach(ev => {
+                    if (getEventPhase(ev.activity) !== p) return;
+                    const d = new Date(ev.start);
+                    if (!isNaN(d.getTime())) timedItems.push({ type: 'event', date: d, ev });
+                });
+                
+
+                // Tasks สำหรับเฟสนี้
+                ALL_TASKS.forEach(t => {
+                    if (t.phase !== p) return;
+                    const d = parseDeadline(t.deadline);
+                    if (d) timedItems.push({ type: 'task', date: d, t });
+                    else untimedTasks.push(t);
+                });
+
+                timedItems.sort((a, b) => a.date - b.date);
+
+                // Progress นับจากงานทั้งหมดของเฟส (ไม่ใช่แค่ที่มี deadline)
+                const allPhaseTasks = ALL_TASKS.filter(t => t.phase === p);
+                const donePhaseTasks = allPhaseTasks.filter(t => t.status === 'done');
+                const pct = allPhaseTasks.length > 0 ? Math.round(donePhaseTasks.length / allPhaseTasks.length * 100) : 0;
+
+                let colBodyHtml = '';
+                let lastMonth = null;
+
+                // แยก events / tasks
+                const eventItems = timedItems.filter(i => i.type === 'event');
+                const taskItems = timedItems.filter(i => i.type === 'task');
+
+                // ── Events ──
+                if (eventItems.length > 0) {
+                    colBodyHtml += `<div class="tl-section-sep" style="border-top:none;padding-top:2px;">📅 กำหนดการ</div>`;
+                    eventItems.forEach(item => {
+                        const ev = item.ev;
+                        const daysAway = Math.ceil((item.date - now) / 86400000);
+                        const dateStr = ev.end
+                            ? `${fmtShort(new Date(ev.start))} – ${fmtShort(new Date(ev.end))}`
+                            : fmtShort(item.date);
+                        let badge = '';
+                        if (daysAway < 0) badge = `<span style="font-size:9px;background:var(--surface2);color:var(--text3);padding:1px 6px;border-radius:99px;">ผ่านแล้ว</span>`;
+                        else if (daysAway === 0) badge = `<span style="font-size:9px;background:var(--done-bg);color:var(--done);padding:1px 6px;border-radius:99px;">วันนี้</span>`;
+                        else if (ev.isMain) badge = `<span style="font-size:9px;background:var(--review-bg);color:var(--review);padding:1px 6px;border-radius:99px;font-weight:600;">🏆 อีก ${daysAway} วัน</span>`;
+                        else badge = `<span style="font-size:9px;background:var(--accent-light);color:var(--accent);padding:1px 6px;border-radius:99px;">อีก ${daysAway} วัน</span>`;
+
+                        colBodyHtml += `<div class="tl-card${ev.isMain ? ' main-event' : ''}" style="padding:8px 10px;border-left:3px solid var(--accent);">
+                    <div style="font-size:11px;font-weight:600;color:var(--text);line-height:1.4;">${escHtml(ev.activity)}</div>
+                    <div style="font-size:9px;color:var(--text3);margin-top:2px;font-family:var(--mono);">${dateStr}</div>
+                    <div style="font-size:9px;color:var(--text3);">📍 ${escHtml(ev.place)}</div>
+                    <div style="margin-top:4px;">${badge}</div>
+                </div>`;
+                    });
+                }
+
+                // ── Tasks ──
+                if (taskItems.length > 0) {
+                    colBodyHtml += `<div class="tl-section-sep">📋 งาน</div>`;
+                    taskItems.forEach(item => {
+                        const t = item.t;
+                        const daysAway = Math.ceil((item.date - now) / 86400000);
+                        const isOverdue = daysAway < 0 && t.status !== 'done';
+                        const isDueSoon = daysAway >= 0 && daysAway <= 7 && t.status !== 'done';
+                        const isBlocker = t.isBlocker === true || t.isBlocker === 'TRUE';
+                        let urgBadge = '';
+                        if (isOverdue) urgBadge = `<span style="font-size:9px;background:#FFF0F0;color:#B83232;padding:1px 6px;border-radius:99px;font-weight:600;">⚠ เลย ${Math.abs(daysAway)} วัน</span>`;
+                        else if (isDueSoon) urgBadge = `<span style="font-size:9px;background:#FFF3EA;color:#C05C00;padding:1px 6px;border-radius:99px;font-weight:600;">⏰ อีก ${daysAway} วัน</span>`;
+                        else if (t.status === 'done') urgBadge = `<span style="font-size:9px;background:var(--done-bg);color:var(--done);padding:1px 6px;border-radius:99px;">✅ เสร็จแล้ว</span>`;
+                        else urgBadge = `<span style="font-size:9px;background:var(--accent-light);color:var(--accent);padding:1px 6px;border-radius:99px;">อีก ${daysAway} วัน</span>`;
+                        const subs = t.subTasks || [];
+                        const subDone = subs.filter(s => s.done).length;
+                        const subHtml = subs.length > 0 ? `
+                    <div style="display:flex;align-items:center;gap:5px;margin-top:5px;">
+                        <div style="flex:1;height:3px;background:var(--border);border-radius:99px;overflow:hidden;">
+                            <div style="width:${Math.round(subDone / subs.length * 100)}%;height:100%;background:var(--done);border-radius:99px;"></div>
+                        </div>
+                        <span style="font-size:9px;font-family:var(--mono);color:var(--text3);flex-shrink:0;">${subDone}/${subs.length}</span>
+                    </div>` : '';
+                        let depHtml = '';
+                        if (t.dependsOn) {
+                            const dep = ALL_TASKS.find(x => x.id === t.dependsOn);
+                            if (dep && dep.status !== 'done') depHtml = `<div style="font-size:9px;color:#B83232;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">⛓ รอ: ${escHtml(dep.name)}</div>`;
+                        }
+                        const sm = STATUS_META[t.status] || {};
+                        const pm = PRIORITY_META[t.priority || '3-medium'] || {};
+                        const borderColor = isOverdue ? '#B83232' : isDueSoon ? '#C05C00' : (PHASE_COLORS[p] || 'var(--border)');
+                        const cardExtra = isOverdue ? ' tl-overdue' : isDueSoon ? ' tl-due-soon' : '';
+                        colBodyHtml += `<div class="tl-card${cardExtra}" style="border-left:3px solid ${borderColor};cursor:pointer;" onclick="editTask('${t.id}')">
+                    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px;">
+                        <span style="font-size:11px;font-weight:600;color:var(--text);line-height:1.35;flex:1;">${escHtml(t.name)}</span>
+                        <span style="font-size:9px;font-family:var(--mono);color:var(--text3);flex-shrink:0;">${t.id}</span>
+                    </div>
+                    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:3px;margin-top:3px;">
+                        <span style="font-size:9px;">${sm.icon || ''}</span>
+                        <span style="font-size:9px;color:var(--text3);">${sm.label || ''}</span>
+                        <span style="font-size:9px;color:var(--border2);">·</span>
+                        <span style="font-size:9px;">${pm.icon || ''}</span>
+                        <span style="font-size:9px;color:var(--text3);">${pm.label || ''}</span>
+                        ${isBlocker ? `<span style="font-size:9px;color:#B83232;font-weight:600;">· 🔴 Blocker</span>` : ''}
+                    </div>
+                    ${depHtml}
+                    ${subHtml}
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:5px;gap:4px;">
+                        <span style="font-size:9px;color:var(--text3);flex-shrink:0;">👤 ${escHtml(t.assignee || '—')}</span>
+                        ${urgBadge}
+                    </div>
+                </div>`;
+                    });
+                }
+                
+                // งานที่ไม่มี deadline (แสดงส่วนล่างสุด)
+                if (untimedTasks.length > 0) {
+                    colBodyHtml += `<div class="tl-section-sep">ไม่มีกำหนดส่ง</div>`;
+                    untimedTasks.forEach(t => {
+                        const sm = STATUS_META[t.status] || {};
+                        colBodyHtml += `<div class="tl-card" style="border-left:3px solid var(--border2);cursor:pointer;opacity:.7;" onclick="editTask('${t.id}')">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:4px;">
+                        <span style="font-size:11px;font-weight:600;color:var(--text);flex:1;">${escHtml(t.name)}</span>
+                        <span style="font-size:9px;font-family:var(--mono);color:var(--text3);">${t.id}</span>
+                    </div>
+                    <div style="font-size:9px;color:var(--text3);margin-top:2px;">${sm.icon || ''} ${sm.label || ''}</div>
+                </div>`;
+                    });
+                }
+
+                if (timedItems.length === 0 && untimedTasks.length === 0) {
+                    colBodyHtml = `<div style="text-align:center;color:var(--text3);padding:28px 8px;font-size:11px;font-style:italic;background:var(--bg);border-radius:var(--radius);border:1px dashed var(--border);">📭 ไม่มีกิจกรรมในเฟสนี้</div>`;
+                }
+
+                html += `<div class="tl-phase-col">
+            <div class="tl-phase-col-header" style="background:${PHASE_COLORS[p]};">
+                <span>${PHASE_LABELS[p]}</span>
+                <span style="font-family:var(--mono);font-size:10px;background:rgba(0,0,0,0.18);padding:2px 6px;border-radius:99px;" title="งานที่เสร็จ/ทั้งหมด">
+                    ${donePhaseTasks.length}/${allPhaseTasks.length} · ${pct}%
+                </span>
+            </div>
+            <div class="tl-phase-col-body">${colBodyHtml}</div>
         </div>`;
-            }).join('');
+            });
+
             document.getElementById('side-tl-body').innerHTML = html;
         }
-
         // ── Full Timeline render ─────────────────────────────────────
         function renderTimeline() {
             const now = new Date();
@@ -2976,29 +3220,6 @@
             if (isNaN(d.getTime())) return escHtml(isoString); // ถ้าไม่ใช่วันที่มาตรฐาน ให้คืนค่าข้อความเดิม
             return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' });
         }
-
-        // ── Demo data ─────────────────────────────────────────────────
-        const DEMO_TASKS = [
-            { id: 't1', name: 'ประสานงาน ComArt ขอ Asset', status: 'done', priority: '3-medium', deadline: '12 พ.ค.', assignee: 'Panas', phase: 'p1', group: 'prep', detail: ['Banner Google Form (1600×400 px)', 'Logo PNG พื้นหลังโปร่งใส', 'รหัสสีหลัก (HEX Codes)'], tech: [], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [{ text: 'ส่ง Brief ให้ ComArt', done: true }, { text: 'รับไฟล์ Banner + Logo', done: true }, { text: 'ตรวจสอบขนาดและสี', done: true }] },
-            { id: 't2', name: 'Template แจ้งปัญหาผ่าน Line Note', status: 'done', priority: '4-low', deadline: '6 พ.ค.', assignee: 'Panas', phase: 'p1', group: 'prep', detail: ['รูปแบบ: [ปัญหา] / Email / ชื่อทีม / ประเภทโควตา'], tech: [], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
-            { id: 't3', name: 'ประสานงานฝ่ายทะเบียน', status: 'review', priority: '2-high', deadline: '11 พ.ค.', assignee: 'Panas', phase: 'p1', group: 'prep', detail: ['ตรวจคำถาม Google Form รับสมัคร', 'ตรวจ Template เมลแจ้งเอกสาร', 'ตรวจ Template เมลยืนยันสิทธิ์'], tech: [], url: '', dependsOn: '', comment: 'รอฝ่ายทะเบียน confirm', isBlocker: false, subTasks: [{ text: 'ส่ง Draft Form ให้ทะเบียน', done: true }, { text: 'รอ Feedback', done: false }] },
-            { id: 't4', name: 'Google Form รับสมัครรอบแรก', status: 'progress', priority: '1-urgent', deadline: '26 พ.ค.', assignee: 'Panas', phase: 'p1', group: 'dev', detail: ['ตั้งค่า Limit 1 Response / Validation เบอร์โทร', 'Required บนไฟล์สำคัญ', 'ปรับ Theme จาก Art ที่ ComArt ทำ'], tech: ['Google Forms'], url: 'https://forms.google.com', dependsOn: 't1', comment: '', isBlocker: true, subTasks: [{ text: 'สร้าง Form โครงสร้างหลัก', done: true }, { text: 'ตั้งค่า Validation', done: true }, { text: 'ใส่ Theme/Asset จาก ComArt', done: false }, { text: 'ทดสอบ Submit ครบ', done: false }] },
-            { id: 't5', name: 'Google Form ส่งเอกสารเพิ่มเติม', status: 'review', priority: '2-high', deadline: '26 เม.ย.', assignee: 'Panas', phase: 'p1', group: 'dev', detail: ['ช่องอ้างอิง Email หัวหน้าทีม', 'รับเฉพาะไฟล์ที่ต้องแก้'], tech: ['Google Forms', 'GAS'], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
-            { id: 't6', name: 'Google Form ยืนยันสิทธิ์', status: 'progress', priority: '1-urgent', deadline: '26 พ.ค.', assignee: 'Panas', phase: 'p1', group: 'dev', detail: ['กรอก Team ID, ไซส์เสื้อ, แนบสลิป', 'ข้อมูลส่งต่อฝ่ายเหรัญญิก + ทะเบียน'], tech: ['Google Forms'], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
-            { id: 't7', name: 'ระบบเว็บตรวจสอบเอกสาร (Staff)', status: 'review', priority: '2-high', deadline: '1 มิ.ย.', assignee: 'Panas', phase: 'p1', group: 'check', detail: ['Login เฉพาะ @kku.ac.th', 'ดูเอกสาร PDF ใน Iframe', 'ตั้งสถานะ + พิมพ์ Feedback', 'Real-time Sync ผ่าน Firebase'], tech: ['Firebase Auth', 'Firebase DB', 'GAS', 'Tailwind'], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
-            { id: 't8', name: 'Looker Studio เช็คสถานะการสมัคร', status: 'progress', priority: '3-medium', deadline: '1 มิ.ย.', assignee: 'natchanon.te', phase: 'p1', group: 'check', detail: ['กรอก Email ดูสถานะ 3 เอกสาร', 'แสดง Feedback จากทะเบียน'], tech: ['Looker Studio', 'Google Sheets'], url: 'https://lookerstudio.google.com', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
-            { id: 't9', name: 'ประสานงานฝ่ายวิชาการ (รอบ 0)', status: 'progress', priority: '2-high', deadline: '29 พ.ค.', assignee: 'Panas', phase: 'p2', group: 'prep', detail: ['สรุปจำนวนข้อสอบ เกณฑ์คะแนน', 'เตรียม Answer Key'], tech: [], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [{ text: 'ประชุมฝ่ายวิชาการ', done: true }, { text: 'รับสรุปจำนวนข้อสอบ', done: false }, { text: 'ตรวจ Answer Key', done: false }] },
-            { id: 't10', name: 'สร้าง Google Form ข้อสอบรอบ 0', status: 'notyet', priority: '1-urgent', deadline: 'รอวิชาการ 20 ก.ค.', assignee: 'Panas', phase: 'p2', group: 'prep', detail: ['Quiz Mode, Login Gmail หัวหน้าทีม', 'Limit 1 Response', 'Release Grades: Manual'], tech: ['Google Forms'], url: '', dependsOn: 't9', comment: 'รอวิชาการส่งข้อสอบก่อน', isBlocker: true, subTasks: [] },
-            { id: 't11', name: 'ระบบส่งเมลลิงก์ข้อสอบ', status: 'review', priority: '2-high', deadline: '15 มิ.ย.', assignee: 'Prechakorn', phase: 'p2', group: 'prep', detail: ['Bulk Sending ผ่าน Apps Script', 'ดึงเฉพาะทีมสถานะสมบูรณ์', 'Log ป้องกันส่งซ้ำ'], tech: ['GAS', 'GmailApp'], url: '', dependsOn: 't10', comment: '', isBlocker: false, subTasks: [] },
-            { id: 't12', name: 'ระบบคัดกรอง 100 ทีม (Round 0)', status: 'todo', priority: '1-urgent', deadline: '26 พ.ค.', assignee: 'Panas', phase: 'p2', group: 'score', detail: ['Auto Score MCQ + Manual (SAQ, Essay)', 'โควตาทีมโรงเรียน 75 + ผสม 25', 'Tie-break: คะแนน Essay → เวลาส่ง'], tech: ['Google Sheets', 'GAS'], url: '', dependsOn: '', comment: '', isBlocker: true, subTasks: [] },
-            { id: 't13', name: 'ระบบส่งเมลประกาศผล + ยืนยันสิทธิ์', status: 'todo', priority: '2-high', deadline: '15 มิ.ย.', assignee: 'Prechakorn', phase: 'p2', group: 'score', detail: ['ส่งเมลยินดี + ลิงก์ยืนยันสิทธิ์ 100 ทีม'], tech: ['GAS', 'GmailApp'], url: '', dependsOn: 't12', comment: '', isBlocker: false, subTasks: [] },
-            { id: 't14', name: 'ส่งเมลเรียกทีมสำรอง', status: 'done', priority: '3-medium', deadline: '15 มิ.ย.', assignee: 'Prechakorn', phase: 'p2', group: 'score', detail: ['แจ้งทีมสำรองกรณีตัวจริงสละสิทธิ์'], tech: ['GAS', 'GmailApp'], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
-            { id: 't15', name: 'Generate Student ID + Import KKUEXAM', status: 'todo', priority: '2-high', deadline: 'ต.ค. 69', assignee: 'Panas', phase: 'p3', group: 'setup', detail: ['MQ001–100-1/2/3 (300 คน)', 'สร้าง Username/Password', 'นำเข้าระบบ KKUEXAM'], tech: ['KKUEXAM', 'Google Sheets'], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
-            { id: 't16', name: 'ระบบคัดกรอง Round 1 → Round 2', status: 'todo', priority: '1-urgent', deadline: '26 พ.ค.', assignee: 'Panas', phase: 'p4', group: 'r1', detail: ['ดึง Raw Score → SORT คะแนนเฉลี่ย', 'Tag 40 ทีม Spot Test / 60 ทีม A/B/C', 'Tie-break: Unseen → เวลา'], tech: ['Google Sheets', 'GAS'], url: '', dependsOn: 't15', comment: '', isBlocker: true, subTasks: [] },
-            { id: 't17', name: 'ระบบกรอกคะแนน Spot Test (รอบ 2)', status: 'done', priority: '2-high', deadline: '26 พ.ค.', assignee: 'Panas', phase: 'p4', group: 'r2', detail: ['Web App คีย์คะแนน 35 สถานี Real-time'], tech: ['GAS', 'Google Sheets'], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
-            { id: 't18', name: 'Dashboard ประกาศฐานกิจกรรม (Looker)', status: 'todo', priority: '2-high', deadline: '21 ก.ย.', assignee: 'natchanon.te', phase: 'p4', group: 'r3', detail: ['QR Code → Team ID → ดูผลรอบ 1/2', 'Mobile Portrait 768×1366'], tech: ['Looker Studio', 'Google Sheets'], url: '', dependsOn: '', comment: '', isBlocker: false, subTasks: [] },
-            { id: 't19', name: 'ระบบคะแนน Game Show (รอบ 3)', status: 'notyet', priority: '3-medium', deadline: 'รอประชุม', assignee: 'Panas', phase: 'p4', group: 'r3', detail: ['รอสรุปกติกาจากวิชาการ/กิจกรรม', 'หน้าจอ Real-time Scoreboard'], tech: [], url: '', dependsOn: '', comment: 'รอประชุมทีมก่อน', isBlocker: false, subTasks: [] },
-        ];
 
         // Show split view button only in board/blockers view
         window.addEventListener('DOMContentLoaded', () => {
