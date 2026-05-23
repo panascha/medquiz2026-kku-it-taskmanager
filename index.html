@@ -102,7 +102,6 @@
             min-width: 0
         }
 
-        /* Split mode: tasks + side timeline side by side */
         .main-body {
             flex: 1;
             display: flex;
@@ -1186,6 +1185,396 @@
             color: var(--text3)
         }
 
+        /* ── IT Overview Panel ── */
+        .overview-panel {
+            display: none;
+            padding: 20px 24px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .overview-panel.visible {
+            display: block
+        }
+
+        .ov-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            gap: 10px;
+            color: var(--text3);
+            font-size: 13px;
+        }
+
+        .ov-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .ov-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .ov-card-title {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 8px;
+        }
+
+        .ov-countdown-val {
+            font-size: 28px;
+            font-family: var(--mono);
+            font-weight: 600;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .ov-countdown-sub {
+            font-size: 11px;
+            color: var(--text2)
+        }
+
+        .ov-pill-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .ov-pill-row:last-child {
+            margin-bottom: 0
+        }
+
+        .ov-phase-bar-item {
+            margin-bottom: 8px
+        }
+
+        .ov-phase-bar-item:last-child {
+            margin-bottom: 0
+        }
+
+        .ov-phase-bar-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text2);
+            margin-bottom: 3px;
+        }
+
+        .ov-phase-bar-track {
+            height: 6px;
+            background: var(--surface2);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .ov-phase-bar-fill {
+            height: 100%;
+            border-radius: 99px;
+            transition: width .5s ease;
+        }
+
+        .ov-legend-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+
+        .ov-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text2);
+        }
+
+        .ov-legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .ov-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ov-widgets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .ov-widget {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .ov-widget-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 7px 9px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .ov-widget-row:last-child {
+            margin-bottom: 0
+        }
+
+        .ov-widget-col {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+        }
+
+        .ov-widget-label {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 12px
+        }
+
+        .ov-widget-desc {
+            font-size: 11px;
+            color: var(--text2)
+        }
+
+        .ov-widget-meta {
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 500;
+            text-align: right;
+            align-self: center;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+
+        .ov-tag {
+            padding: 1px 7px;
+            border-radius: 99px;
+            font-size: 10px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* Kanban columns in overview */
+        .ov-kanban-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .ov-kanban-col {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .ov-kanban-header {
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border2);
+        }
+
+        .ov-kanban-title {
+            font-weight: 600;
+            font-size: 11px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2px;
+        }
+
+        .ov-kanban-sub {
+            font-size: 10px;
+            color: var(--text2)
+        }
+
+        .ov-kcard {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 9px 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .ov-kcard.ov-kcard-done {
+            opacity: .55
+        }
+
+        .ov-kcard.ov-kcard-done .ov-kcard-name {
+            text-decoration: line-through;
+            color: var(--text3)
+        }
+
+        .ov-kcard.ov-kcard-blocker {
+            border: 1.5px solid var(--urgent);
+            background: var(--urgent-bg)
+        }
+
+        .ov-kcard-name {
+            font-weight: 500;
+            font-size: 11px;
+            color: var(--text);
+            line-height: 1.35;
+            margin-bottom: 5px
+        }
+
+        .ov-kcard {
+            cursor: pointer;
+            transition: border-color .15s, box-shadow .15s;
+        }
+        .ov-kcard:hover {
+            border-color: var(--border2);
+            box-shadow: var(--shadow);
+        }
+        .ov-kcard.expanded {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(29, 95, 166, .08);
+        }
+        .ov-kcard .chevron-ov {
+            font-size: 10px;
+            color: var(--text3);
+            transition: transform .2s;
+            margin-left: auto;
+        }
+        .ov-kcard.expanded .chevron-ov {
+            transform: rotate(180deg);
+        }
+        .ov-kcard-detail-wrap {
+            display: none;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border);
+        }
+        .ov-kcard.expanded .ov-kcard-detail-wrap {
+            display: block;
+        }
+        .ov-monthly-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .ov-month-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 12px;
+            box-shadow: var(--shadow);
+        }
+        .ov-month-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent-light);
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ov-kcard-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            align-items: center;
+        }
+
+        .ov-chip-status {
+            font-size: 9px;
+            font-weight: 600;
+            padding: 1px 5px;
+            border-radius: 99px;
+            text-transform: uppercase;
+        }
+
+        .ov-chip-assignee {
+            font-size: 9px;
+            background: var(--bg);
+            color: var(--text2);
+            padding: 1px 5px;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+        }
+
+        .ov-chip-deadline {
+            font-size: 9px;
+            color: var(--text3);
+            font-family: var(--mono);
+            margin-left: auto;
+        }
+
+        .ov-badge-blocker {
+            font-size: 9px;
+            font-weight: 600;
+            background: var(--urgent);
+            color: #fff;
+            padding: 1px 4px;
+            border-radius: 4px;
+        }
+
+        .ov-refresh-btn {
+            font-size: 11px;
+            color: var(--text3);
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 3px 8px;
+            cursor: pointer;
+            font-family: var(--font);
+        }
+
+        .ov-refresh-btn:hover {
+            background: var(--surface2);
+            color: var(--text)
+        }
+
+        .ov-last-updated {
+            font-size: 10px;
+            color: var(--text3);
+            margin-top: 16px;
+            text-align: right;
+            font-family: var(--mono);
+        }
+
         /* ── Toast ── */
         #toast {
             position: fixed;
@@ -1403,7 +1792,6 @@
             margin: 0
         }
 
-        /* ── Logs modal ── */
         .logs-table {
             width: 100%;
             border-collapse: collapse;
@@ -1440,17 +1828,14 @@
             color: var(--text3)
         }
 
-        /* ── Timeline (full view) ── */
         .timeline-panel {
             display: none
         }
 
-        /* เพิ่มส่วนนี้เพื่อให้แสดงผลเมื่อเปิดหน้า Timeline */
         .timeline-panel.visible {
-            display: block;
+            display: block
         }
 
-        /* ── Visual Flow Timeline ── */
         .visual-timeline-panel {
             display: none;
             background: var(--surface);
@@ -1460,7 +1845,7 @@
         }
 
         .visual-timeline-panel.visible {
-            display: block;
+            display: block
         }
 
         .vt-container {
@@ -1468,7 +1853,8 @@
             min-width: 100%;
             min-height: 100%;
             background: var(--surface);
-            background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
             background-size: 100% 40px, 40px 100%;
             background-position: 0 -1px, -1px 0;
         }
@@ -1479,7 +1865,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 5;
+            z-index: 5
         }
 
         .vt-event-line {
@@ -1488,7 +1874,7 @@
             bottom: 0;
             width: 0;
             border-left: 2px dashed var(--accent);
-            z-index: 2;
+            z-index: 2
         }
 
         .vt-event-label {
@@ -1504,7 +1890,7 @@
             border: 1px solid var(--accent);
             border-radius: 99px;
             z-index: 3;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .05)
         }
 
         .vt-task {
@@ -1517,14 +1903,14 @@
             font-size: 11px;
             z-index: 10;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-            transition: box-shadow 0.15s, transform 0.15s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .04);
+            transition: box-shadow .15s, transform .15s
         }
 
         .vt-task:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
             transform: translateY(-2px);
-            z-index: 11;
+            z-index: 11
         }
 
         .vt-task-title {
@@ -1533,7 +1919,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            margin-bottom: 2px;
+            margin-bottom: 2px
         }
 
         .vt-task-meta {
@@ -1542,13 +1928,34 @@
             font-family: var(--mono);
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: center
+        }
+        /* ── เส้นคั่นกำหนดการสีแดงสำหรับหน้าบอร์ดหลัก ── */
+        .tl-event-line-sep {
+            position: relative;
+            text-align: center;
+            margin: 18px 0;
+            border-top: 1.5px dashed #B83232;
+            height: 0;
+            clear: both;
+        }
+        .tl-event-line-text {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg); /* ปรับสีพื้นหลังกลืนตามธีม Light/Dark */
+            color: #B83232;
+            padding: 2px 10px;
+            font-size: 10px;
+            font-weight: 600;
+            border-radius: 99px;
+            border: 1.5px solid #B83232;
+            white-space: nowrap;
+            z-index: 10;
+            box-shadow: var(--shadow);
         }
 
-        /* ── Timeline (full view) ── */
-        .timeline-panel {
-            display: none
-        }
 
         /* ── Responsive ── */
         @media(max-width:900px) {
@@ -1587,6 +1994,22 @@
             .countdown-event {
                 display: none
             }
+
+            .overview-panel {
+                padding: 14px 16px
+            }
+
+            .ov-summary-grid {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .ov-widgets-grid {
+                grid-template-columns: 1fr
+            }
+
+            .ov-kanban-grid {
+                grid-template-columns: 1fr 1fr
+            }
         }
 
         @media(max-width:480px) {
@@ -1596,6 +2019,14 @@
 
             .task-card {
                 padding: 10px 12px
+            }
+
+            .ov-summary-grid {
+                grid-template-columns: 1fr
+            }
+
+            .ov-kanban-grid {
+                grid-template-columns: 1fr
             }
         }
     </style>
@@ -1618,6 +2049,9 @@
             <div class="sidebar-section">Views</div>
             <div class="nav-item active" id="nav-board" onclick="switchView('tasks',this)">
                 <span class="nav-icon">▦</span> Board
+            </div>
+            <div class="nav-item" id="nav-overview" onclick="switchView('overview',this)">
+                <span class="nav-icon">📊</span> IT Overview
             </div>
             <div class="nav-item" id="nav-timeline" onclick="switchView('timeline',this)">
                 <span class="nav-icon">📅</span> Timeline
@@ -1682,8 +2116,7 @@
             <div style="flex:1"></div>
             <div style="padding:12px 16px;border-top:1px solid var(--border)">
                 <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="toggleDark()">🌙
-                    Dark
-                    Mode</button>
+                    Dark Mode</button>
             </div>
         </aside>
 
@@ -1719,22 +2152,20 @@
             <!-- Topbar -->
             <div class="topbar">
                 <div class="topbar-title" id="topbar-title">ทั้งหมด</div>
-                <div class="search-wrap">
+                <div class="search-wrap" id="search-wrap">
                     <span class="search-icon">⌕</span>
                     <input type="text" class="search-input" id="search-input" placeholder="ค้นหางาน..."
                         oninput="onSearch(this.value)">
                 </div>
-                <!-- Sort by date -->
                 <button class="btn-icon" title="เรียงตามวันที่" onclick="sortByDate()" id="btn-sort-date">📅</button>
-                <!-- Split view toggle -->
                 <button class="btn-icon" title="Split View: Timeline" onclick="toggleSplitView()" id="btn-split"
                     style="display:none">⊟</button>
-                <button class="btn-icon" title="รีเฟรช" onclick="loadData()">↻</button>
-                <button class="btn btn-primary" onclick="openModal()">＋ เพิ่มงาน</button>
+                <button class="btn-icon" title="รีเฟรช" onclick="refreshCurrentView()" id="btn-refresh">↻</button>
+                <button class="btn btn-primary" id="btn-add-task" onclick="openModal()">＋ เพิ่มงาน</button>
             </div>
 
             <!-- Stats bar -->
-            <div class="stats-bar">
+            <div class="stats-bar" id="stats-bar">
                 <div class="stat-pill c-done" onclick="setFilter('status','done',null)">✅ Done <span
                         id="s-done">0</span></div>
                 <div class="stat-pill c-review" onclick="setFilter('status','review',null)">🔍 Review <span
@@ -1742,8 +2173,7 @@
                 <div class="stat-pill c-progress" onclick="setFilter('status','progress',null)">🔄 In Progress <span
                         id="s-progress">0</span></div>
                 <div class="stat-pill c-todo" onclick="setFilter('status','todo',null)">📋 To Do <span
-                        id="s-todo">0</span>
-                </div>
+                        id="s-todo">0</span></div>
                 <div class="stat-pill c-notyet" onclick="setFilter('status','notyet',null)">⏳ Not Yet <span
                         id="s-notyet">0</span></div>
                 <div class="filter-chip" id="filter-clear" style="display:none" onclick="clearFilters()">✕ ล้างตัวกรอง
@@ -1756,27 +2186,57 @@
                 <span id="tech-filter-btns"></span>
             </div>
 
-            <!-- Main body (tasks + optional side timeline) -->
+            <!-- Main body -->
             <div class="main-body">
-
-                <!-- Task board column -->
                 <div class="tasks-column">
+                    <!-- Board panel -->
                     <div class="content tasks-panel" id="tasks-panel">
                         <div id="task-container" class="tasks-grid"></div>
                     </div>
-                    <!-- Full Timeline panel (inside tasks column) -->
+
+                    <!-- Full Timeline panel -->
                     <div class="content timeline-panel" id="timeline-panel">
                         <h3 style="font-size:15px;font-weight:600;margin-bottom:16px;color:var(--text)">📅 ตารางกิจกรรม
-                            MedQuiz KKU
-                            2026</h3>
+                            MedQuiz KKU 2026</h3>
                         <div
                             style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">
                             <table class="timeline-table" id="timeline-table"></table>
                         </div>
                     </div>
+
                     <!-- Flow / Gantt Timeline panel -->
-                    <div class="visual-timeline-panel" id="visual-timeline-panel">
-                        <!-- Rendered by JS -->
+                    <div class="visual-timeline-panel" id="visual-timeline-panel"></div>
+
+                    <!-- ── IT Overview Panel ── -->
+                    <div class="overview-panel" id="overview-panel">
+                        <div class="ov-loading" id="ov-loading">
+                            <div class="spinner"></div>
+                            <span>กำลังโหลดข้อมูล IT Overview...</span>
+                        </div>
+                        <div id="ov-content" style="display:none">
+                            <!-- Summary cards -->
+                            <div
+                                style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+                                <div class="ov-section-title" style="margin-bottom:0">📊 ภาพรวมโปรเจกต์ IT · MedQuiz KKU
+                                    2026</div>
+                                <button class="ov-refresh-btn" onclick="loadOverview()">↻ รีเฟรชข้อมูล</button>
+                            </div>
+
+                            <div class="ov-summary-grid" id="ov-summary-grid"></div>
+
+                            <!-- Kanban by phase -->
+                            <div class="ov-section-title" style="margin-top:4px">📋 งานแยกตามเฟส</div>
+                            <div class="ov-kanban-grid" id="ov-kanban-grid"></div>
+                            
+                            <!-- Monthly plan summary -->
+                            <div class="ov-section-title" style="margin-top:20px">📅 แผนงานรายเดือน</div>
+                            <div class="ov-monthly-grid" id="ov-monthly-grid"></div>
+                            
+                            <!-- Bottom widgets -->
+                            <div class="ov-widgets-grid" id="ov-widgets-grid"></div>
+
+                            <div class="ov-last-updated" id="ov-last-updated"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -1789,10 +2249,9 @@
                     </div>
                     <div class="side-tl-body" id="side-tl-body"></div>
                 </div>
-
-            </div><!-- /main-body -->
-        </div><!-- /main -->
-    </div><!-- /shell -->
+            </div>
+        </div>
+    </div>
 
     <!-- ── Edit/Add Modal ── -->
     <div class="modal-backdrop" id="modal-backdrop" onclick="handleBackdropClick(event)">
@@ -1846,7 +2305,7 @@
                 <div class="field-row">
                     <div class="field-group">
                         <label>Deadline</label>
-                        <input type="date" id="f-deadline" placeholder="เช่น 26 พ.ค.">
+                        <input type="date" id="f-deadline">
                     </div>
                     <div class="field-group">
                         <label>ผู้รับผิดชอบ</label>
@@ -1879,7 +2338,6 @@
                     <label>Tech Stack (แยกด้วยคอมม่า)</label>
                     <input type="text" id="f-tech" placeholder="เช่น Firebase, GAS, Google Forms">
                 </div>
-
                 <div class="field-group">
                     <label>Sub-tasks (งานย่อย)</label>
                     <div id="modal-subtasks-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:4px;">
@@ -1891,12 +2349,11 @@
                         <button type="button" class="subtask-add-btn" onclick="addModalSubTask()">+ เพิ่ม</button>
                     </div>
                 </div>
-
                 <div class="checkbox-row" style="margin-top:8px;">
                     <input type="checkbox" id="f-blocker">
                     <label for="f-blocker"
-                        style="font-size:13px;text-transform:none;font-weight:400;letter-spacing:0">🔴 เป็น
-                        Blocker (งานนี้ขัดขวางงานอื่น)</label>
+                        style="font-size:13px;text-transform:none;font-weight:400;letter-spacing:0">🔴 เป็น Blocker
+                        (งานนี้ขัดขวางงานอื่น)</label>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1963,7 +2420,6 @@
         let currentView = 'tasks';
         let splitViewOpen = false;
         let sortableInstance = null;
-        // orderMap: taskId → display order index (for drag & drop persistence)
         let orderMap = {};
         let isSortedByDate = false;
 
@@ -1993,22 +2449,16 @@
         window.onload = () => { loadData(); startCountdown(); };
 
         function loadData() {
-            // 1. สร้าง URL ใหม่ทุกครั้งที่เรียก โดยต่อท้ายด้วย Timestamp ป้องกันการ Cache
             const noCacheUrl = API_URL + '?t=' + new Date().getTime();
-
-            // 2. สั่ง fetch โดยบังคับไม่ให้ใช้ cache (no-store)
             fetch(noCacheUrl, { cache: 'no-store' })
-                .then(response => response.json())
+                .then(r => r.json())
                 .then(tasks => {
                     ALL_TASKS = tasks || [];
-
-                    // ถ้ามี orderMap เก่าอยู่ ให้คงไว้ ถ้าไม่มีให้สร้างใหม่
-                    ALL_TASKS.forEach((t, i) => {
-                        if (orderMap[t.id] === undefined) orderMap[t.id] = i;
-                    });
-
+                    ALL_TASKS.forEach((t, i) => { if (orderMap[t.id] === undefined) orderMap[t.id] = i; });
                     render();
                     hideLoading();
+                    // If overview is open, refresh it too
+                    if (currentView === 'overview') renderOverview(ALL_TASKS);
                 })
                 .catch(err => {
                     showToast('โหลดข้อมูลไม่สำเร็จ: ' + err.message, true);
@@ -2016,55 +2466,434 @@
                 });
         }
 
-        function hideLoading() {
-            document.getElementById('loading').classList.add('hidden');
+        function hideLoading() { document.getElementById('loading').classList.add('hidden') }
+
+        function refreshCurrentView() {
+            if (currentView === 'overview') loadOverview();
+            else loadData();
+        }
+
+        // ── IT Overview ──────────────────────────────────────────────
+        function loadOverview() {
+            document.getElementById('ov-loading').style.display = 'flex';
+            document.getElementById('ov-content').style.display = 'none';
+
+            const noCacheUrl = API_URL + '?t=' + new Date().getTime();
+            fetch(noCacheUrl, { cache: 'no-store' })
+                .then(r => r.json())
+                .then(tasks => {
+                    ALL_TASKS = tasks || [];
+                    ALL_TASKS.forEach((t, i) => { if (orderMap[t.id] === undefined) orderMap[t.id] = i; });
+                    renderOverview(tasks);
+                    updateCounts();
+                    renderProgressBars();
+                    renderTechFilter();
+                })
+                .catch(err => {
+                    document.getElementById('ov-loading').innerHTML =
+                        `<span style="color:var(--urgent)">โหลดข้อมูลไม่สำเร็จ: ${escHtml(err.message)}</span>`;
+                });
+        }
+
+        function renderOverview(tasks) {
+                document.getElementById('ov-loading').style.display = 'none';
+                document.getElementById('ov-content').style.display = 'block';
+
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const eventDate = new Date('2026-11-01T00:00:00');
+                const daysLeft = Math.ceil((eventDate - today) / 86400000);
+
+                // ── Summary cards ──
+                const statusCounts = { done: 0, review: 0, progress: 0, todo: 0, notyet: 0 };
+                tasks.forEach(t => { if (statusCounts[t.status] !== undefined) statusCounts[t.status]++ });
+                const total = tasks.length;
+
+                const statusMeta = {
+                    done: { txt: '✅ Done', bg: 'var(--done-bg)', fg: 'var(--done)' },
+                    review: { txt: '🔍 Review', bg: 'var(--review-bg)', fg: 'var(--review)' },
+                    progress: { txt: '🔄 In Progress', bg: 'var(--progress-bg)', fg: 'var(--progress)' },
+                    todo: { txt: '📋 To Do', bg: 'var(--todo-bg)', fg: 'var(--todo)' },
+                    notyet: { txt: '⏳ Not Yet', bg: 'var(--notyet-bg)', fg: 'var(--notyet)' },
+                };
+
+                let pillsHtml = '';
+                Object.entries(statusCounts).forEach(([st, cnt]) => {
+                    const m = statusMeta[st];
+                    const pct = total ? Math.round(cnt / total * 100) : 0;
+                    pillsHtml += `<div class="ov-pill-row" style="background:${m.bg};color:${m.fg};">
+                    <span>${m.txt}</span>
+                    <span style="font-family:var(--mono);font-weight:600;">${cnt} (${pct}%)</span>
+                </div>`;
+                });
+
+                let phaseProgressHtml = '';
+                Object.entries(PHASE_META).forEach(([ph, pm]) => {
+                    const pt = tasks.filter(t => t.phase === ph);
+                    const done = pt.filter(t => t.status === 'done').length;
+                    const pct = pt.length ? Math.round(done / pt.length * 100) : 0;
+                    phaseProgressHtml += `<div class="ov-phase-bar-item">
+                    <div class="ov-phase-bar-header">
+                        <span>${pm.label}</span>
+                        <span>${done}/${pt.length} (${pct}%)</span>
+                    </div>
+                    <div class="ov-phase-bar-track">
+                        <div class="ov-phase-bar-fill" style="width:${pct}%;background:${pm.color};"></div>
+                    </div>
+                </div>`;
+                });
+
+                document.getElementById('ov-summary-grid').innerHTML = `
+                <div class="ov-card">
+                    <div class="ov-card-title">วันแข่งขันรอบชิงชนะเลิศ</div>
+                    <div class="ov-countdown-val">${daysLeft} วัน</div>
+                    <div class="ov-countdown-sub">วันอาทิตย์ที่ 1 พ.ย. 2569 · คณะแพทยศาสตร์ มข.</div>
+                </div>
+                <div class="ov-card">
+                    <div class="ov-card-title">สถานะงานทั้งหมด (${total} งาน)</div>
+                    <div style="margin-top:4px">${pillsHtml}</div>
+                </div>
+                <div class="ov-card">
+                    <div class="ov-card-title">ความคืบหน้าระดับเฟส</div>
+                    <div style="margin-top:4px">${phaseProgressHtml}</div>
+                </div>
+                <div class="ov-card">
+                    <div class="ov-card-title">สัญลักษณ์สี</div>
+                    <div class="ov-legend-grid" style="margin-top:8px">
+                        <div class="ov-legend-item"><span class="ov-legend-dot" style="background:var(--done)"></span>Done</div>
+                        <div class="ov-legend-item"><span class="ov-legend-dot" style="background:var(--review)"></span>Review</div>
+                        <div class="ov-legend-item"><span class="ov-legend-dot" style="background:var(--progress)"></span>Progress</div>
+                        <div class="ov-legend-item"><span class="ov-legend-dot" style="background:var(--todo)"></span>To Do</div>
+                        <div class="ov-legend-item"><span class="ov-legend-dot" style="background:var(--notyet)"></span>Not Yet</div>
+                        <div class="ov-legend-item"><span class="ov-legend-dot" style="background:var(--urgent)"></span>Blocker</div>
+                    </div>
+                </div>`;
+
+                // ── Kanban by phase ──
+                let kanbanHtml = '';
+                Object.entries(PHASE_META).forEach(([ph, pm]) => {
+                    const pt = tasks.filter(t => t.phase === ph);
+                    const done = pt.filter(t => t.status === 'done').length;
+                    const pct = pt.length ? Math.round(done / pt.length * 100) : 0;
+
+                    let cardsHtml = pt.map(t => buildOvCard(t)).join('');
+
+                    kanbanHtml += `<div class="ov-kanban-col">
+                    <div class="ov-kanban-header" style="border-bottom-color:${pm.color}">
+                        <div class="ov-kanban-title">
+                            <span>${pm.label}</span>
+                            <span style="background:${pm.color};color:#fff;font-size:10px;padding:1px 6px;border-radius:99px">${pt.length} งาน</span>
+                        </div>
+                        <div class="ov-kanban-sub">เสร็จแล้ว ${done} งาน (${pct}%)</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">${cardsHtml}</div>
+                </div>`;
+                });
+                document.getElementById('ov-kanban-grid').innerHTML = kanbanHtml;
+
+                // ── Monthly Plan Summary ──
+                const monthlyGroups = {};
+                tasks.forEach(t => {
+                    const key = getThaiMonthYear(t.deadline);
+                    if (!monthlyGroups[key]) monthlyGroups[key] = [];
+                    monthlyGroups[key].push(t);
+                });
+
+                const sortedMonthKeys = Object.keys(monthlyGroups).sort((a, b) => {
+                    if (a === 'ไม่ระบุกำหนดส่ง') return 1;
+                    if (b === 'ไม่ระบุกำหนดส่ง') return -1;
+                    const firstA = monthlyGroups[a].find(t => parseDeadline(t.deadline))?.deadline;
+                    const firstB = monthlyGroups[b].find(t => parseDeadline(t.deadline))?.deadline;
+                    if (!firstA) return 1;
+                    if (!firstB) return -1;
+                    return new Date(firstA) - new Date(firstB);
+                });
+
+                let monthlyHtml = '';
+                sortedMonthKeys.forEach(mKey => {
+                    const groupTasks = monthlyGroups[mKey];
+                    const doneCount = groupTasks.filter(t => t.status === 'done').length;
+                    const pct = groupTasks.length ? Math.round(doneCount / groupTasks.length * 100) : 0;
+
+                    const cardsHtml = groupTasks.map(t => buildOvCard(t)).join('');
+
+                    monthlyHtml += `
+                    <div class="ov-month-card">
+                        <div class="ov-month-title">
+                            <span>📅 ${escHtml(mKey)}</span>
+                            <span style="font-size:10px;background:var(--accent-light);color:var(--accent);padding:1px 6px;border-radius:99px;">
+                                ${doneCount}/${groupTasks.length} งาน (${pct}%)
+                            </span>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:6px;">${cardsHtml}</div>
+                    </div>
+                `;
+                });
+                document.getElementById('ov-monthly-grid').innerHTML = monthlyHtml || '<div style="grid-column: 1/-1; text-align: center; color: var(--text3); font-style: italic;">ไม่มีงานที่มีกำหนดส่ง</div>';
+
+                // ── Bottom widgets ──
+                // Widget 1: Upcoming in 30 days
+                const now30 = new Date(today.getTime() + 30 * 86400000);
+                const upcoming = tasks
+                .filter(t => t.status !== 'done' && t.deadline)
+                .map(t => ({ ...t, _d: new Date(t.deadline) }))
+                .filter(t => !isNaN(t._d) && t._d >= today && t._d <= now30)
+                .sort((a, b) => a._d - b._d);
+
+            let upcomingHtml = '';
+            if (!upcoming.length) {
+                upcomingHtml = `<div class="ov-widget-row" style="justify-content:center;color:var(--text3);font-style:italic">ไม่มีงานที่มีกำหนดส่งภายใน 30 วัน</div>`;
+            } else {
+                upcomingHtml = upcoming.map(t => {
+                    const days = Math.ceil((t._d - today) / 86400000);
+                    const urgent = days <= 14;
+                    return `<div class="ov-widget-row" style="${urgent ? 'background:var(--urgent-bg);border-color:#F5C6C6' : ''}">
+                        <div class="ov-widget-col">
+                            <span class="ov-widget-label">${escHtml(t.name)}</span>
+                            <span class="ov-widget-desc">${t.id} · ${escHtml(t.assignee || '—')} · ${t.phase.toUpperCase()}</span>
+                        </div>
+                        <div class="ov-widget-meta">
+                            <span class="ov-tag" style="${urgent ? 'background:var(--urgent);color:#fff' : 'background:var(--high-bg);color:var(--high)'}">
+                                อีก ${days} วัน (${formatThaiDate(t.deadline)})
+                            </span>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+
+            // Widget 2: Active blockers
+            const blockers = tasks.filter(t => (t.isBlocker === true || t.isBlocker === 'TRUE') && t.status !== 'done');
+            let blockersHtml = '';
+            if (!blockers.length) {
+                blockersHtml = `<div class="ov-widget-row" style="background:var(--done-bg);color:var(--done);justify-content:center;font-weight:500">✓ ไม่พบความเสี่ยง Blocker</div>`;
+            } else {
+                blockersHtml = blockers.map(b => {
+                    const blocked = tasks.filter(t => t.dependsOn === b.id).map(t => t.id).join(', ') || 'ไม่มี';
+                    return `<div class="ov-widget-row" style="border-left:4px solid var(--urgent)">
+                        <div class="ov-widget-col">
+                            <span class="ov-widget-label" style="color:var(--urgent)">🔴 [${b.id}] ${escHtml(b.name)}</span>
+                            <span class="ov-widget-desc">ผู้รับผิดชอบ: ${escHtml(b.assignee || '—')} · สถานะ: ${b.status}</span>
+                            <span class="ov-widget-desc">⛓ งานที่ติดขัด: <strong style="color:var(--urgent);font-family:var(--mono)">${blocked}</strong></span>
+                        </div>
+                        <div class="ov-widget-meta" style="color:var(--urgent);font-weight:600">${formatThaiDate(b.deadline)}</div>
+                    </div>`;
+                }).join('');
+            }
+
+            // Widget 3: Team workload
+            const workload = {};
+            tasks.forEach(t => {
+                if (!t.assignee) return;
+                if (!workload[t.assignee]) workload[t.assignee] = { total: 0, active: 0 };
+                workload[t.assignee].total++;
+                if (t.status !== 'done') workload[t.assignee].active++;
+            });
+            const workloadHtml = Object.entries(workload)
+                .sort((a, b) => b[1].active - a[1].active)
+                .map(([name, c]) => `<div class="ov-widget-row">
+                    <div class="ov-widget-col">
+                        <span class="ov-widget-label">👤 ${escHtml(name)}</span>
+                        <span class="ov-widget-desc">งานทั้งหมด: ${c.total} งาน</span>
+                    </div>
+                    <div class="ov-widget-meta">
+                        <span class="ov-tag" style="background:${c.active > 3 ? 'var(--urgent-bg)' : 'var(--done-bg)'};color:${c.active > 3 ? 'var(--urgent)' : 'var(--done)'}">
+                            ค้างอยู่ ${c.active} งาน
+                        </span>
+                    </div>
+                </div>`).join('') || '<div class="ov-widget-row">ไม่มีข้อมูล</div>';
+
+            document.getElementById('ov-widgets-grid').innerHTML = `
+                <div class="ov-widget">
+                    <div class="ov-section-title">⏰ งานที่กำลังจะมาถึงใน 30 วัน</div>
+                    ${upcomingHtml}
+                </div>
+                <div class="ov-widget">
+                    <div class="ov-section-title">🔴 รายการ Blocker และงานที่ติดขัด</div>
+                    ${blockersHtml}
+                </div>
+                <div class="ov-widget">
+                    <div class="ov-section-title">👤 ปริมาณงานคงค้างรายบุคคล</div>
+                    ${workloadHtml}
+                </div>`;
+
+            const now = new Date();
+            document.getElementById('ov-last-updated').textContent =
+                'อัปเดตล่าสุด: ' + now.toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' });
         }
 
         // ── View switching ───────────────────────────────────────────
+        function getThaiMonthYear(isoString) {
+                if (!isoString) return 'ไม่ระบุกำหนดส่ง';
+                const d = new Date(isoString);
+                if (isNaN(d.getTime())) return 'ไม่ระบุกำหนดส่ง';
+                return d.toLocaleDateString('th-TH', { month: 'long', year: 'numeric' });
+            }
+
+            function toggleOvCard(event, el, id) {
+                if (event.target.closest('button,a,select,input')) return;
+                el.classList.toggle('expanded');
+                if (expandedIds.has(id)) {
+                    expandedIds.delete(id);
+                } else {
+                    expandedIds.add(id);
+                }
+            }
+
+            function buildOvCard(t) {
+                const isDone = t.status === 'done';
+                const isBlocker = (t.isBlocker === true || t.isBlocker === 'TRUE') && !isDone;
+                const sm = STATUS_META[t.status] || { label: t.status, icon: '' };
+                const subs = t.subTasks || [];
+                const subsDone = subs.filter(s => s.done).length;
+                const subChip = subs.length ? `<span class="ov-chip-assignee">☑ ${subsDone}/${subs.length}</span>` : '';
+
+                const bgColor = (() => {
+                    switch (t.status) {
+                        case 'done': return 'var(--done-bg)'; case 'review': return 'var(--review-bg)';
+                        case 'progress': return 'var(--progress-bg)'; case 'todo': return 'var(--todo-bg)';
+                        case 'notyet': return 'var(--notyet-bg)'; default: return 'var(--surface2)';
+                    }
+                })();
+                const fgColor = (() => {
+                    switch (t.status) {
+                        case 'done': return 'var(--done)'; case 'review': return 'var(--review)';
+                        case 'progress': return 'var(--progress)'; case 'todo': return 'var(--todo)';
+                        case 'notyet': return 'var(--notyet)'; default: return 'var(--text2)';
+                    }
+                })();
+
+                const isExpanded = expandedIds.has(t.id);
+                const details = (t.detail || []).map(d => `<li>${escHtml(d)}</li>`).join('');
+                const techPills = (t.tech || []).filter(Boolean).map(tech => `<span class="tech-pill">${escHtml(tech)}</span>`).join('');
+                let depWarn = '';
+                if (t.dependsOn) {
+                    const dep = ALL_TASKS.find(x => x.id === t.dependsOn);
+                    if (dep && dep.status !== 'done') {
+                        depWarn = `<div class="dep-warning" style="margin-top:0;margin-bottom:8px;">⚠️ รอ: <strong>${escHtml(dep.name)}</strong> (${STATUS_META[dep.status]?.label || dep.status})</div>`;
+                    }
+                }
+                const commentHtml = t.comment ? `<div class="comment-box" style="margin-top:6px;"><span style="color:var(--text3);font-size:11px">💬 </span><span class="comment-text">${escHtml(t.comment)}</span></div>` : '';
+                const urlChip = t.url ? `<a class="chip-url" href="${escHtml(t.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔗 เปิด Resource</a>` : '';
+
+                let subtasksHtml = '';
+                if (subs.length > 0) {
+                    const items = subs.map(s => `
+                    <div style="display:flex;align-items:center;gap:6px;font-size:11px;padding:2px 0;">
+                        <span style="color:${s.done ? 'var(--done)' : 'var(--text3)'};font-weight:bold;">${s.done ? '✓' : '○'}</span>
+                        <span style="color:var(--text2);text-decoration:${s.done ? 'line-through' : 'none'};opacity:${s.done ? '0.6' : '1'}">${escHtml(s.text)}</span>
+                    </div>
+                `).join('');
+                    subtasksHtml = `<div style="margin-top:8px;border-top:1px dashed var(--border);padding-top:6px;">
+                    <div style="font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:4px;">Sub-tasks (${subsDone}/${subs.length})</div>
+                    ${items}
+                </div>`;
+                }
+
+                return `
+            <div class="ov-kcard${isDone ? ' ov-kcard-done' : ''}${isBlocker ? ' ov-kcard-blocker' : ''}${isExpanded ? ' expanded' : ''}" data-id="${t.id}" onclick="toggleOvCard(event, this, '${t.id}')">
+                <div style="display:flex;align-items:flex-start;gap:6px;">
+                    <div class="ov-kcard-name" style="flex:1;">${escHtml(t.name)}</div>
+                    <span class="chevron-ov">▾</span>
+                </div>
+                <div class="ov-kcard-meta">
+                    <span class="ov-chip-status" style="background:${bgColor};color:${fgColor}">${sm.label}</span>
+                    ${t.assignee ? `<span class="ov-chip-assignee">👤 ${escHtml(t.assignee)}</span>` : ''}
+                    ${subChip}
+                    ${isBlocker ? '<span class="ov-badge-blocker">⚠ Blocker</span>' : ''}
+                    ${t.deadline ? `<span class="ov-chip-deadline">${formatThaiDate(t.deadline)}</span>` : ''}
+                </div>
+                <div class="ov-kcard-detail-wrap">
+                    ${depWarn}
+                    ${details ? `<ul class="detail-list" style="margin-bottom:6px;">${details}</ul>` : ''}
+                    ${techPills ? `<div class="tech-pills" style="margin-top:4px;margin-bottom:6px;">${techPills}</div>` : ''}
+                    ${commentHtml}
+                    ${subtasksHtml}
+                    <div style="display:flex;gap:6px;margin-top:8px;align-items:center;justify-content:space-between;">
+                        ${urlChip}
+                        <button class="btn btn-ghost btn-sm" style="padding:3px 8px;font-size:11px;" onclick="event.stopPropagation();editTask('${t.id}')">✎ แก้ไข</button>
+                    </div>
+                </div>
+            </div>`;
+            }
+
         function switchView(view, el) {
             currentView = view;
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if (el) el.classList.add('active');
 
-            const tasks = document.getElementById('tasks-panel');
-            const timeline = document.getElementById('timeline-panel');
-            const visualTimeline = document.getElementById('visual-timeline-panel');
-            const btnSplit = document.getElementById('btn-split');
+            const tasksPanel = document.getElementById('tasks-panel');
+            const timelinePanel = document.getElementById('timeline-panel');
+            const visualPanel = document.getElementById('visual-timeline-panel');
+            const overviewPanel = document.getElementById('overview-panel');
+            const statsBar = document.getElementById('stats-bar');
+            const techBar = document.getElementById('tech-filter-bar');
+            const searchWrap = document.getElementById('search-wrap');
+            const btnAdd = document.getElementById('btn-add-task');
             const btnSort = document.getElementById('btn-sort-date');
+            const btnSplit = document.getElementById('btn-split');
 
-            // ซ่อนทุกหน้าก่อนเป็นค่าเริ่มต้น
-            if (tasks) tasks.classList.add('hidden');
-            if (timeline) timeline.classList.remove('visible');
-            if (visualTimeline) visualTimeline.classList.remove('visible');
+            // hide all panels
+            tasksPanel.classList.add('hidden');
+            timelinePanel.classList.remove('visible');
+            visualPanel.classList.remove('visible');
+            overviewPanel.classList.remove('visible');
 
-            if (view === 'timeline') {
-                if (timeline) timeline.classList.add('visible');
+            if (view === 'overview') {
+                overviewPanel.classList.add('visible');
+                document.getElementById('topbar-title').textContent = '📊 IT Overview';
+                statsBar.style.display = 'none';
+                techBar.style.display = 'none';
+                searchWrap.style.display = 'none';
+                btnAdd.style.display = 'none';
+                btnSort.style.display = 'none';
+                btnSplit.style.display = 'none';
+                loadOverview();
+            } else if (view === 'timeline') {
+                timelinePanel.classList.add('visible');
                 document.getElementById('topbar-title').textContent = '📅 Timeline MedQuiz 2026';
-                if (btnSplit) btnSplit.style.display = 'none';
-                if (btnSort) btnSort.style.display = 'none';
+                statsBar.style.display = '';
+                techBar.style.display = '';
+                searchWrap.style.display = '';
+                btnAdd.style.display = '';
+                btnSort.style.display = 'none';
+                btnSplit.style.display = 'none';
                 renderTimeline();
             } else if (view === 'flow') {
-                if (visualTimeline) visualTimeline.classList.add('visible');
+                visualPanel.classList.add('visible');
                 document.getElementById('topbar-title').textContent = '📈 Flow Timeline';
-                if (btnSplit) btnSplit.style.display = 'none';
-                if (btnSort) btnSort.style.display = 'none';
+                statsBar.style.display = '';
+                techBar.style.display = '';
+                searchWrap.style.display = '';
+                btnAdd.style.display = '';
+                btnSort.style.display = 'none';
+                btnSplit.style.display = 'none';
                 renderVisualTimeline();
             } else if (view === 'blockers') {
-                if (tasks) tasks.classList.remove('hidden');
+                tasksPanel.classList.remove('hidden');
                 document.getElementById('topbar-title').textContent = '🔴 Blockers';
                 activeFilter = { type: 'blocker', value: true };
-                if (btnSplit) btnSplit.style.display = '';
-                if (btnSort) btnSort.style.display = '';
+                statsBar.style.display = '';
+                techBar.style.display = '';
+                searchWrap.style.display = '';
+                btnAdd.style.display = '';
+                btnSort.style.display = '';
+                btnSplit.style.display = '';
                 render();
             } else {
-                if (tasks) tasks.classList.remove('hidden');
+                // tasks (board)
+                tasksPanel.classList.remove('hidden');
                 activeFilter = { type: 'phase', value: 'all' };
                 document.getElementById('topbar-title').textContent = 'ทั้งหมด';
-                if (btnSplit) btnSplit.style.display = '';
-                if (btnSort) btnSort.style.display = '';
+                statsBar.style.display = '';
+                techBar.style.display = '';
+                searchWrap.style.display = '';
+                btnAdd.style.display = '';
+                btnSort.style.display = '';
+                btnSplit.style.display = '';
                 render();
             }
         }
+
         // ── Split View ───────────────────────────────────────────────
         function toggleSplitView() {
             splitViewOpen = !splitViewOpen;
@@ -2084,270 +2913,175 @@
                 btn.title = 'กำหนดการ';
             }
         }
+
         function getEventPhase(activity) {
             const act = activity.toLowerCase();
             if (act.includes('สมัคร')) return 'p1';
             if (act.includes('รอบคัดเลือก') || act.includes('ตัวจริง') || act.includes('สำรอง') || act.includes('สิทธิ์แข่งขัน')) return 'p2';
-            if (act.includes('สิทธิ์แข่งขัน')) return 'p3';
             if (act.includes('วันแข่งขัน')) return 'p4';
-            return 'p1'; // fallback
+            return 'p1';
         }
+
         function renderSideTimeline() {
-            if (!document.getElementById('side-tl-custom-style')) {
-                const style = document.createElement('style');
-                style.id = 'side-tl-custom-style';
-                style.innerHTML = `
-          .side-timeline-panel.open {
-    flex: 1 !important;          /* เดิม width: 920px */
-    width: 100% !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-    background: var(--surface) !important;
-}
-          #side-tl-body {
-            display: flex !important;
-            flex-direction: row !important;
-            gap: 8px !important;
-            padding: 8px !important;
-            overflow-x: auto !important;
-            overflow-y: hidden !important;
-            flex: 1 !important;
-            min-height: 0 !important;
-            background: var(--bg) !important;
-            box-sizing: border-box !important;
-          }
-            .tl-month-sep {
-    font-size: 10px; font-weight: 600; color: var(--text2);
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 3px 8px;
-    text-align: center; margin: 4px 0 2px; flex-shrink: 0;
-    letter-spacing: .03em;
-}
-          .tl-phase-col {
-            flex: 1 !important;
-            min-width: 200px !important;
-            max-width: none !important;
-            display: flex !important;
-            flex-direction: column !important;
-            background: var(--surface) !important;
-            border: 1px solid var(--border) !important;
-            border-radius: var(--radius-lg) !important;
-            overflow: hidden !important;
-            min-height: 0 !important;
-            box-shadow: var(--shadow) !important;
-            box-sizing: border-box !important;
-          }
-          .tl-phase-col-header {
-            padding: 9px 11px !important;
-            font-weight: 600 !important;
-            font-size: 11px !important;
-            text-transform: uppercase !important;
-            color: #fff !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            flex-shrink: 0 !important;
-          }
-          .tl-phase-col-body {
-            flex: 1 !important;
-            overflow-y: auto !important;
-            padding: 7px 7px 20px !important;
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 5px !important;
-            min-height: 0 !important;
-            box-sizing: border-box !important;
-          }
-          .tl-phase-col-body::-webkit-scrollbar { width: 4px !important; }
-          .tl-phase-col-body::-webkit-scrollbar-track { background: transparent !important; }
-          .tl-phase-col-body::-webkit-scrollbar-thumb { background: var(--border2) !important; border-radius: 99px !important; }
-          .tl-card {
-            background: var(--surface2) !important;
-            border: 1px solid var(--border) !important;
-            border-radius: var(--radius) !important;
-            padding: 8px 10px !important;
-            transition: box-shadow .15s, transform .1s !important;
-          }
-          .tl-card:hover { box-shadow: 0 3px 8px rgba(0,0,0,.07) !important; transform: translateY(-1px) !important; }
-          .tl-card.tl-overdue { border-left: 3px solid #B83232 !important; background: #FFF9F9 !important; }
-          .tl-card.tl-due-soon { border-left: 3px solid #C05C00 !important; background: #FFFAF5 !important; }
-          body.dark .tl-card.tl-overdue { background: #2A1818 !important; }
-          body.dark .tl-card.tl-due-soon { background: #2A2010 !important; }
-          .tl-section-sep {
-            font-size: 9px; font-weight: 600; color: var(--text3);
-            text-transform: uppercase; letter-spacing: .07em;
-            padding: 7px 2px 2px; border-top: 1px solid var(--border); margin-top: 3px;
-          }
-          @media(max-width: 1100px) {
-            .side-timeline-panel.open {
-              width: 100% !important; position: fixed !important;
-              right: 0 !important; top: 0 !important; bottom: 0 !important; z-index: 200 !important;
-            }
-          }
-        `;
-                document.head.appendChild(style);
-            }
+                if (!document.getElementById('side-tl-custom-style')) {
+                    const style = document.createElement('style');
+                    style.id = 'side-tl-custom-style';
+                    style.innerHTML = `
+                  .side-timeline-panel.open { flex:1!important;width:100%!important;height:100%!important;max-height:100%!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;background:var(--surface)!important; }
+                  #side-tl-body { display:flex!important;flex-direction:row!important;gap:8px!important;padding:8px!important;overflow-x:auto!important;overflow-y:hidden!important;flex:1!important;min-height:0!important;background:var(--bg)!important;box-sizing:border-box!important; }
+                  .tl-phase-col { flex:1!important;min-width:200px!important;max-width:none!important;display:flex!important;flex-direction:column!important;background:var(--surface)!important;border:1px solid var(--border)!important;border-radius:var(--radius-lg)!important;overflow:hidden!important;min-height:0!important;box-shadow:var(--shadow)!important;box-sizing:border-box!important; }
+                  .tl-phase-col-header { padding:9px 11px!important;font-weight:600!important;font-size:11px!important;text-transform:uppercase!important;color:#fff!important;display:flex!important;align-items:center!important;justify-content:space-between!important;flex-shrink:0!important; }
+                  .tl-phase-col-body { flex:1!important;overflow-y:auto!important;padding:12px 10px 20px!important;display:flex!important;flex-direction:column!important;gap:8px!important;min-height:0!important;box-sizing:border-box!important; }
+                  .tl-phase-col-body::-webkit-scrollbar{width:4px!important;} .tl-phase-col-body::-webkit-scrollbar-thumb{background:var(--border2)!important;border-radius:99px!important;}
+                  .tl-card{background:var(--surface2)!important;border:1px solid var(--border)!important;border-radius:var(--radius)!important;padding:8px 10px!important;transition:box-shadow .15s,transform .1s!important;box-sizing:border-box;}
+                  .tl-card:hover{box-shadow:0 3px 8px rgba(0,0,0,.07)!important;transform:translateY(-1px)!important;}
+                  .tl-card.tl-overdue{border-left:3px solid #B83232!important;background:#FFF9F9!important;}
+                  .tl-card.tl-due-soon{border-left:3px solid #C05C00!important;background:#FFFAF5!important;}
+                  body.dark .tl-card.tl-overdue{background:#2A1818!important;} body.dark .tl-card.tl-due-soon{background:#2A2010!important;}
+                  .tl-section-sep{font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;padding:7px 2px 2px;border-top:1px solid var(--border);margin-top:3px;}
+                  
+                  /* สไตล์สำหรับเส้นแดงคั่นกำหนดการ */
+                  .tl-event-line-sep {
+                      position: relative;
+                      text-align: center;
+                      margin: 16px 0;
+                      border-top: 1.5px dashed #B83232;
+                      height: 0;
+                      clear: both;
+                  }
+                  .tl-event-line-text {
+                      position: absolute;
+                      top: 0;
+                      left: 50%;
+                      transform: translate(-50%, -50%);
+                      background: var(--surface);
+                      color: #B83232;
+                      padding: 2px 10px;
+                      font-size: 10px;
+                      font-weight: 600;
+                      border-radius: 99px;
+                      border: 1.5px solid #B83232;
+                      white-space: nowrap;
+                      z-index: 10;
+                      box-shadow: var(--shadow);
+                  }
+                `;
+                    document.head.appendChild(style);
+                }
 
-            const now = new Date();
-            now.setHours(0, 0, 0, 0);
+                const now = new Date(); now.setHours(0, 0, 0, 0);
+                const PHASES = ['p1', 'p2', 'p3', 'p4'];
+                const PHASE_LABELS = { p1: 'Phase 1 · รับสมัคร', p2: 'Phase 2 · รอบ 0', p3: 'Phase 3 · KKUEXAM', p4: 'Phase 4 · วันงาน' };
+                const fmtShort = d => d.toLocaleDateString('th-TH', { month: 'short', day: 'numeric' });
+                let html = '';
 
-            const PHASES = ['p1', 'p2', 'p3', 'p4'];
-            const PHASE_LABELS = {
-                p1: 'Phase 1 · รับสมัคร', p2: 'Phase 2 · รอบ 0',
-                p3: 'Phase 3 · KKUEXAM', p4: 'Phase 4 · วันงาน'
-            };
-            const fmtShort = d => d.toLocaleDateString('th-TH', { month: 'short', day: 'numeric' });
+                PHASES.forEach(p => {
+                    const timedItems = [], untimedTasks = [];
+                    TIMELINE_EVENTS.forEach(ev => {
+                        if (getEventPhase(ev.activity) !== p) return;
+                        const d = new Date(ev.start);
+                        if (!isNaN(d.getTime())) timedItems.push({ type: 'event', date: d, ev });
+                    });
+                    ALL_TASKS.forEach(t => {
+                        if (t.phase !== p) return;
+                        const d = parseDeadline(t.deadline);
+                        if (d) timedItems.push({ type: 'task', date: d, t });
+                        else untimedTasks.push(t);
+                    });
 
-            let html = '';
+                    // เรียงลำดับเวลา (Chronological)
+                    timedItems.sort((a, b) => a.date - b.date);
 
-            PHASES.forEach(p => {
-                const timedItems = [];
-                const untimedTasks = [];
+                    const allPhaseTasks = ALL_TASKS.filter(t => t.phase === p);
+                    const donePhaseTasks = allPhaseTasks.filter(t => t.status === 'done');
+                    const pct = allPhaseTasks.length > 0 ? Math.round(donePhaseTasks.length / allPhaseTasks.length * 100) : 0;
+                    let colBodyHtml = '';
 
-                // Timeline events สำหรับเฟสนี้
-                TIMELINE_EVENTS.forEach(ev => {
-                    if (getEventPhase(ev.activity) !== p) return;
-                    const d = new Date(ev.start);
-                    if (!isNaN(d.getTime())) timedItems.push({ type: 'event', date: d, ev });
+                    // วนลูปแสดงผลเรียงตามเวลาจริง
+                    if (timedItems.length > 0) {
+                        timedItems.forEach(item => {
+                            if (item.type === 'event') {
+                                const ev = item.ev;
+                                const daysAway = Math.ceil((item.date - now) / 86400000);
+                                const dateStr = ev.end ? `${fmtShort(new Date(ev.start))} – ${fmtShort(new Date(ev.end))}` : fmtShort(item.date);
+
+                                colBodyHtml += `
+                            <div class="tl-event-line-sep" title="สถานที่: ${escHtml(ev.place)}">
+                                <span class="tl-event-line-text">
+                                    ${ev.isMain ? '🏆' : '📍'} ${escHtml(ev.activity)} (${dateStr})
+                                </span>
+                            </div>`;
+                            } else if (item.type === 'task') {
+                                const t = item.t;
+                                const daysAway = Math.ceil((item.date - now) / 86400000);
+                                const isOverdue = daysAway < 0 && t.status !== 'done';
+                                const isDueSoon = daysAway >= 0 && daysAway <= 7 && t.status !== 'done';
+                                const isBlocker = t.isBlocker === true || t.isBlocker === 'TRUE';
+                                let urgBadge = isOverdue ? `<span style="font-size:9px;background:#FFF0F0;color:#B83232;padding:1px 6px;border-radius:99px;font-weight:600;">⚠ เลย ${Math.abs(daysAway)} วัน</span>`
+                                    : isDueSoon ? `<span style="font-size:9px;background:#FFF3EA;color:#C05C00;padding:1px 6px;border-radius:99px;font-weight:600;">⏰ อีก ${daysAway} วัน</span>`
+                                        : t.status === 'done' ? `<span style="font-size:9px;background:var(--done-bg);color:var(--done);padding:1px 6px;border-radius:99px;">✅ เสร็จแล้ว</span>`
+                                            : `<span style="font-size:9px;background:var(--accent-light);color:var(--accent);padding:1px 6px;border-radius:99px;">อีก ${daysAway} วัน</span>`;
+                                const subs = t.subTasks || [];
+                                const subDone = subs.filter(s => s.done).length;
+                                const subHtml = subs.length > 0 ? `<div style="display:flex;align-items:center;gap:5px;margin-top:5px;"><div style="flex:1;height:3px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="width:${Math.round(subDone / subs.length * 100)}%;height:100%;background:var(--done);border-radius:99px;"></div></div><span style="font-size:9px;font-family:var(--mono);color:var(--text3);flex-shrink:0;">${subDone}/${subs.length}</span></div>` : '';
+                                const sm = STATUS_META[t.status] || {};
+                                const pm2 = PRIORITY_META[t.priority || '3-medium'] || {};
+                                const borderColor = isOverdue ? '#B83232' : isDueSoon ? '#C05C00' : (PHASE_COLORS[p] || 'var(--border)');
+                                const cardExtra = isOverdue ? ' tl-overdue' : isDueSoon ? ' tl-due-soon' : '';
+
+                                colBodyHtml += `<div class="tl-card${cardExtra}" style="border-left:3px solid ${borderColor};cursor:pointer;" onclick="editTask('${t.id}')">
+                                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px;">
+                                    <span style="font-size:11px;font-weight:600;color:var(--text);line-height:1.35;flex:1;">${escHtml(t.name)}</span>
+<span style="font-size:9px;font-family:var(--mono);color:var(--text3);flex-shrink:0;">${formatThaiDate(t.deadline)}</span>
+                                </div>
+                                <div style="display:flex;align-items:center;flex-wrap:wrap;gap:3px;margin-top:3px;">
+                                    <span style="font-size:9px;">${sm.icon || ''}</span>
+                                    <span style="font-size:9px;color:var(--text3);">${sm.label || ''}</span>
+                                    <span style="font-size:9px;color:var(--border2);">·</span>
+                                    <span style="font-size:9px;">${pm2.icon || ''}</span>
+                                    <span style="font-size:9px;color:var(--text3);">${pm2.label || ''}</span>
+                                    ${isBlocker ? `<span style="font-size:9px;color:#B83232;font-weight:600;">· 🔴 Blocker</span>` : ''}
+                                </div>
+                                ${subHtml}
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:5px;gap:4px;">
+                                    <span style="font-size:9px;color:var(--text3);flex-shrink:0;">👤 ${escHtml(t.assignee || '—')}</span>
+                                    ${urgBadge}
+                                </div>
+                            </div>`;
+                            }
+                        });
+                    }
+
+                    // สำหรับงานที่ไม่มีกำหนดส่ง จะอยู่บริเวณท้ายสุด
+                    if (untimedTasks.length > 0) {
+                        colBodyHtml += `<div class="tl-section-sep">ไม่มีกำหนดส่ง</div>`;
+                        untimedTasks.forEach(t => {
+                            const sm = STATUS_META[t.status] || {};
+                            colBodyHtml += `<div class="tl-card" style="border-left:3px solid var(--border2);cursor:pointer;opacity:.7;" onclick="editTask('${t.id}')">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:4px;">
+                                <span style="font-size:11px;font-weight:600;color:var(--text);flex:1;">${escHtml(t.name)}</span>
+                                <span style="font-size:9px;font-family:var(--mono);color:var(--text3);">${t.id}</span>
+                            </div>
+                            <div style="font-size:9px;color:var(--text3);margin-top:2px;">${sm.icon || ''} ${sm.label || ''}</div>
+                        </div>`;
+                        });
+                    }
+
+                    if (timedItems.length === 0 && untimedTasks.length === 0) {
+                        colBodyHtml = `<div style="text-align:center;color:var(--text3);padding:28px 8px;font-size:11px;font-style:italic;background:var(--bg);border-radius:var(--radius);border:1px dashed var(--border);">📭 ไม่มีกิจกรรมในเฟสนี้</div>`;
+                    }
+
+                    html += `<div class="tl-phase-col">
+                    <div class="tl-phase-col-header" style="background:${PHASE_COLORS[p]};">
+                        <span>${PHASE_LABELS[p]}</span>
+                        <span style="font-family:var(--mono);font-size:10px;background:rgba(0,0,0,0.18);padding:2px 6px;border-radius:99px;">${donePhaseTasks.length}/${allPhaseTasks.length} · ${pct}%</span>
+                    </div>
+                    <div class="tl-phase-col-body">${colBodyHtml}</div>
+                </div>`;
                 });
-                
+                document.getElementById('side-tl-body').innerHTML = html;
+            }
 
-                // Tasks สำหรับเฟสนี้
-                ALL_TASKS.forEach(t => {
-                    if (t.phase !== p) return;
-                    const d = parseDeadline(t.deadline);
-                    if (d) timedItems.push({ type: 'task', date: d, t });
-                    else untimedTasks.push(t);
-                });
-
-                timedItems.sort((a, b) => a.date - b.date);
-
-                // Progress นับจากงานทั้งหมดของเฟส (ไม่ใช่แค่ที่มี deadline)
-                const allPhaseTasks = ALL_TASKS.filter(t => t.phase === p);
-                const donePhaseTasks = allPhaseTasks.filter(t => t.status === 'done');
-                const pct = allPhaseTasks.length > 0 ? Math.round(donePhaseTasks.length / allPhaseTasks.length * 100) : 0;
-
-                let colBodyHtml = '';
-                let lastMonth = null;
-
-                // แยก events / tasks
-                const eventItems = timedItems.filter(i => i.type === 'event');
-                const taskItems = timedItems.filter(i => i.type === 'task');
-
-                // ── Events ──
-                if (eventItems.length > 0) {
-                    colBodyHtml += `<div class="tl-section-sep" style="border-top:none;padding-top:2px;">📅 กำหนดการ</div>`;
-                    eventItems.forEach(item => {
-                        const ev = item.ev;
-                        const daysAway = Math.ceil((item.date - now) / 86400000);
-                        const dateStr = ev.end
-                            ? `${fmtShort(new Date(ev.start))} – ${fmtShort(new Date(ev.end))}`
-                            : fmtShort(item.date);
-                        let badge = '';
-                        if (daysAway < 0) badge = `<span style="font-size:9px;background:var(--surface2);color:var(--text3);padding:1px 6px;border-radius:99px;">ผ่านแล้ว</span>`;
-                        else if (daysAway === 0) badge = `<span style="font-size:9px;background:var(--done-bg);color:var(--done);padding:1px 6px;border-radius:99px;">วันนี้</span>`;
-                        else if (ev.isMain) badge = `<span style="font-size:9px;background:var(--review-bg);color:var(--review);padding:1px 6px;border-radius:99px;font-weight:600;">🏆 อีก ${daysAway} วัน</span>`;
-                        else badge = `<span style="font-size:9px;background:var(--accent-light);color:var(--accent);padding:1px 6px;border-radius:99px;">อีก ${daysAway} วัน</span>`;
-
-                        colBodyHtml += `<div class="tl-card${ev.isMain ? ' main-event' : ''}" style="padding:8px 10px;border-left:3px solid var(--accent);">
-                    <div style="font-size:11px;font-weight:600;color:var(--text);line-height:1.4;">${escHtml(ev.activity)}</div>
-                    <div style="font-size:9px;color:var(--text3);margin-top:2px;font-family:var(--mono);">${dateStr}</div>
-                    <div style="font-size:9px;color:var(--text3);">📍 ${escHtml(ev.place)}</div>
-                    <div style="margin-top:4px;">${badge}</div>
-                </div>`;
-                    });
-                }
-
-                // ── Tasks ──
-                if (taskItems.length > 0) {
-                    colBodyHtml += `<div class="tl-section-sep">📋 งาน</div>`;
-                    taskItems.forEach(item => {
-                        const t = item.t;
-                        const daysAway = Math.ceil((item.date - now) / 86400000);
-                        const isOverdue = daysAway < 0 && t.status !== 'done';
-                        const isDueSoon = daysAway >= 0 && daysAway <= 7 && t.status !== 'done';
-                        const isBlocker = t.isBlocker === true || t.isBlocker === 'TRUE';
-                        let urgBadge = '';
-                        if (isOverdue) urgBadge = `<span style="font-size:9px;background:#FFF0F0;color:#B83232;padding:1px 6px;border-radius:99px;font-weight:600;">⚠ เลย ${Math.abs(daysAway)} วัน</span>`;
-                        else if (isDueSoon) urgBadge = `<span style="font-size:9px;background:#FFF3EA;color:#C05C00;padding:1px 6px;border-radius:99px;font-weight:600;">⏰ อีก ${daysAway} วัน</span>`;
-                        else if (t.status === 'done') urgBadge = `<span style="font-size:9px;background:var(--done-bg);color:var(--done);padding:1px 6px;border-radius:99px;">✅ เสร็จแล้ว</span>`;
-                        else urgBadge = `<span style="font-size:9px;background:var(--accent-light);color:var(--accent);padding:1px 6px;border-radius:99px;">อีก ${daysAway} วัน</span>`;
-                        const subs = t.subTasks || [];
-                        const subDone = subs.filter(s => s.done).length;
-                        const subHtml = subs.length > 0 ? `
-                    <div style="display:flex;align-items:center;gap:5px;margin-top:5px;">
-                        <div style="flex:1;height:3px;background:var(--border);border-radius:99px;overflow:hidden;">
-                            <div style="width:${Math.round(subDone / subs.length * 100)}%;height:100%;background:var(--done);border-radius:99px;"></div>
-                        </div>
-                        <span style="font-size:9px;font-family:var(--mono);color:var(--text3);flex-shrink:0;">${subDone}/${subs.length}</span>
-                    </div>` : '';
-                        let depHtml = '';
-                        if (t.dependsOn) {
-                            const dep = ALL_TASKS.find(x => x.id === t.dependsOn);
-                            if (dep && dep.status !== 'done') depHtml = `<div style="font-size:9px;color:#B83232;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">⛓ รอ: ${escHtml(dep.name)}</div>`;
-                        }
-                        const sm = STATUS_META[t.status] || {};
-                        const pm = PRIORITY_META[t.priority || '3-medium'] || {};
-                        const borderColor = isOverdue ? '#B83232' : isDueSoon ? '#C05C00' : (PHASE_COLORS[p] || 'var(--border)');
-                        const cardExtra = isOverdue ? ' tl-overdue' : isDueSoon ? ' tl-due-soon' : '';
-                        colBodyHtml += `<div class="tl-card${cardExtra}" style="border-left:3px solid ${borderColor};cursor:pointer;" onclick="editTask('${t.id}')">
-                    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px;">
-                        <span style="font-size:11px;font-weight:600;color:var(--text);line-height:1.35;flex:1;">${escHtml(t.name)}</span>
-                        <span style="font-size:9px;font-family:var(--mono);color:var(--text3);flex-shrink:0;">${t.id}</span>
-                    </div>
-                    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:3px;margin-top:3px;">
-                        <span style="font-size:9px;">${sm.icon || ''}</span>
-                        <span style="font-size:9px;color:var(--text3);">${sm.label || ''}</span>
-                        <span style="font-size:9px;color:var(--border2);">·</span>
-                        <span style="font-size:9px;">${pm.icon || ''}</span>
-                        <span style="font-size:9px;color:var(--text3);">${pm.label || ''}</span>
-                        ${isBlocker ? `<span style="font-size:9px;color:#B83232;font-weight:600;">· 🔴 Blocker</span>` : ''}
-                    </div>
-                    ${depHtml}
-                    ${subHtml}
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:5px;gap:4px;">
-                        <span style="font-size:9px;color:var(--text3);flex-shrink:0;">👤 ${escHtml(t.assignee || '—')}</span>
-                        ${urgBadge}
-                    </div>
-                </div>`;
-                    });
-                }
-                
-                // งานที่ไม่มี deadline (แสดงส่วนล่างสุด)
-                if (untimedTasks.length > 0) {
-                    colBodyHtml += `<div class="tl-section-sep">ไม่มีกำหนดส่ง</div>`;
-                    untimedTasks.forEach(t => {
-                        const sm = STATUS_META[t.status] || {};
-                        colBodyHtml += `<div class="tl-card" style="border-left:3px solid var(--border2);cursor:pointer;opacity:.7;" onclick="editTask('${t.id}')">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:4px;">
-                        <span style="font-size:11px;font-weight:600;color:var(--text);flex:1;">${escHtml(t.name)}</span>
-                        <span style="font-size:9px;font-family:var(--mono);color:var(--text3);">${t.id}</span>
-                    </div>
-                    <div style="font-size:9px;color:var(--text3);margin-top:2px;">${sm.icon || ''} ${sm.label || ''}</div>
-                </div>`;
-                    });
-                }
-
-                if (timedItems.length === 0 && untimedTasks.length === 0) {
-                    colBodyHtml = `<div style="text-align:center;color:var(--text3);padding:28px 8px;font-size:11px;font-style:italic;background:var(--bg);border-radius:var(--radius);border:1px dashed var(--border);">📭 ไม่มีกิจกรรมในเฟสนี้</div>`;
-                }
-
-                html += `<div class="tl-phase-col">
-            <div class="tl-phase-col-header" style="background:${PHASE_COLORS[p]};">
-                <span>${PHASE_LABELS[p]}</span>
-                <span style="font-family:var(--mono);font-size:10px;background:rgba(0,0,0,0.18);padding:2px 6px;border-radius:99px;" title="งานที่เสร็จ/ทั้งหมด">
-                    ${donePhaseTasks.length}/${allPhaseTasks.length} · ${pct}%
-                </span>
-            </div>
-            <div class="tl-phase-col-body">${colBodyHtml}</div>
-        </div>`;
-            });
-
-            document.getElementById('side-tl-body').innerHTML = html;
-        }
         // ── Full Timeline render ─────────────────────────────────────
         function renderTimeline() {
             const now = new Date();
@@ -2357,15 +3091,10 @@
                 let badge = '', daysStr = '';
                 if (ev.isMain) {
                     badge = `<span class="event-badge badge-main">🏆 Main Event</span>`;
-                    daysStr = daysAway > 0 ? `<span class="days-away">${daysAway} วันจากนี้</span>` : `<span class="days-away" style="color:var(--done)">✓ ผ่านแล้ว</span>`;
-                } else if (daysAway < 0) {
-                    badge = `<span class="event-badge badge-past">ผ่านแล้ว</span>`;
-                } else if (daysAway === 0) {
-                    badge = `<span class="event-badge badge-today">วันนี้</span>`;
-                } else {
-                    badge = `<span class="event-badge badge-upcoming">กำลังจะมาถึง</span>`;
-                    daysStr = `<span class="days-away">${daysAway} วัน</span>`;
-                }
+                    daysStr = daysAway > 0 ? `<span class="days-away">${daysAway} วัน</span>` : `<span class="days-away" style="color:var(--done)">✓ ผ่านแล้ว</span>`;
+                } else if (daysAway < 0) badge = `<span class="event-badge badge-past">ผ่านแล้ว</span>`;
+                else if (daysAway === 0) badge = `<span class="event-badge badge-today">วันนี้</span>`;
+                else { badge = `<span class="event-badge badge-upcoming">กำลังจะมาถึง</span>`; daysStr = `<span class="days-away">${daysAway} วัน</span>`; }
                 const fmtDate = d => new Date(d).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
                 const dateStr = ev.end ? `${fmtDate(ev.start)} – ${fmtDate(ev.end)}` : fmtDate(ev.start);
                 return `<tr><td><div class="event-main">${escHtml(ev.activity)}</div><div style="margin-top:4px;display:flex;gap:8px;align-items:center">${badge} ${daysStr}</div></td><td><div class="event-date">${dateStr}</div></td><td class="event-location">${escHtml(ev.place)}</td></tr>`;
@@ -2373,174 +3102,85 @@
             document.getElementById('timeline-table').innerHTML = `<thead><tr><th>กิจกรรม</th><th>วันที่</th><th>สถานที่</th></tr></thead><tbody>${rows}</tbody>`;
         }
 
-        // ── Visual Flow Timeline render (Updated for ISO Date) ───────
+        // ── Visual Flow Timeline ─────────────────────────────────────
         function renderVisualTimeline() {
             const containerEl = document.getElementById('visual-timeline-panel');
-            if (!ALL_TASKS || ALL_TASKS.length === 0) {
-                containerEl.innerHTML = '<div class="empty">ไม่พบข้อมูลงาน</div>';
-                return;
-            }
-
-            // 1. เตรียมข้อมูลและหาช่วงเวลา (Scale)
+            if (!ALL_TASKS || ALL_TASKS.length === 0) { containerEl.innerHTML = '<div class="empty">ไม่พบข้อมูลงาน</div>'; return; }
             const validTasks = [];
-            const now = new Date();
-            now.setHours(0, 0, 0, 0);
+            const now = new Date(); now.setHours(0, 0, 0, 0);
             const nowTs = now.getTime();
-
-            let minTime = nowTs;
-            let maxTime = nowTs;
-
+            let minTime = nowTs, maxTime = nowTs;
             ALL_TASKS.forEach(t => {
                 const d = parseDeadline(t.deadline);
-                if (d) {
-                    validTasks.push({ ...t, parsedDate: d });
-                    const ts = d.getTime();
-                    if (ts < minTime) minTime = ts;
-                    if (ts > maxTime) maxTime = ts;
-                }
+                if (d) { validTasks.push({ ...t, parsedDate: d }); const ts = d.getTime(); if (ts < minTime) minTime = ts; if (ts > maxTime) maxTime = ts; }
             });
-
-            TIMELINE_EVENTS.forEach(e => {
-                const ts = new Date(e.start).getTime();
-                if (ts < minTime) minTime = ts;
-                if (ts > maxTime) maxTime = ts;
-            });
-
-            // ขยายขอบเขตแกนเวลา (Margin)
-            minTime -= 86400000 * 5;  // ล่วงหน้า 5 วัน
-            maxTime += 86400000 * 10; // หลังกำหนดการสุดท้าย 10 วัน
-
-            const pxPerDay = 45; // ขยายความกว้างต่อวันให้เห็นลำดับงานชัดขึ้น
+            TIMELINE_EVENTS.forEach(e => { const ts = new Date(e.start).getTime(); if (ts < minTime) minTime = ts; if (ts > maxTime) maxTime = ts; });
+            minTime -= 86400000 * 5; maxTime += 86400000 * 10;
+            const pxPerDay = 45;
             const containerWidth = Math.max(((maxTime - minTime) / 86400000) * pxPerDay, 1000);
-
             let innerHtml = '';
-            let svg = `<svg class="vt-svg" style="width:${containerWidth}px; height: 100%;">
-        <defs>
-          <marker id="vt-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--text3)"/>
-          </marker>
-        </defs>`;
-
-            // 2. วาดเส้นขีดแบ่งวัน (Background Grid)
+            let svg = `<svg class="vt-svg" style="width:${containerWidth}px; height: 100%;"><defs><marker id="vt-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--text3)"/></marker></defs>`;
             const totalDays = Math.ceil((maxTime - minTime) / 86400000);
-            for (let i = 0; i <= totalDays; i++) {
-                const x = i * pxPerDay;
-                const d = new Date(minTime + (i * 86400000));
-                // ขีดเส้นแบ่งวันจางๆ
-                innerHtml += `<div style="position:absolute; left:${x}px; top:0; bottom:0; border-left:1px solid var(--border); opacity:0.3; pointer-events:none;"></div>`;
-            }
-
-            // 3. วาดเส้น "วันนี้" (Current Day Marker)
+            for (let i = 0; i <= totalDays; i++) innerHtml += `<div style="position:absolute;left:${i * pxPerDay}px;top:0;bottom:0;border-left:1px solid var(--border);opacity:0.3;pointer-events:none;"></div>`;
             const todayX = ((nowTs - minTime) / 86400000) * pxPerDay;
-            innerHtml += `<div class="vt-event-line" style="left:${todayX}px; border-left:2px solid #B83232; z-index:5; opacity:0.8;"></div>`;
-            innerHtml += `<div class="vt-event-label" style="left:${todayX}px; top:10px; color:#B83232; border:1px solid #B83232; background:#fff; font-weight:600; z-index:6;">📍 วันนี้</div>`;
-
-            // 4. วาดเส้นกำหนดการหลัก (Timeline Events)
+            innerHtml += `<div class="vt-event-line" style="left:${todayX}px;border-left:2px solid #B83232;z-index:5;opacity:0.8;"></div>`;
+            innerHtml += `<div class="vt-event-label" style="left:${todayX}px;top:10px;color:#B83232;border:1px solid #B83232;background:#fff;font-weight:600;z-index:6;">📍 วันนี้</div>`;
             TIMELINE_EVENTS.forEach(ev => {
                 const ts = new Date(ev.start).getTime();
                 const x = ((ts - minTime) / 86400000) * pxPerDay;
                 const fmtDate = new Date(ts).toLocaleDateString('th-TH', { month: 'short', day: 'numeric' });
-                innerHtml += `<div class="vt-event-line" style="left:${x}px; border-left: 2px dashed var(--accent);"></div>`;
-                innerHtml += `<div class="vt-event-label" style="left:${x}px; top:45px;">${escHtml(ev.activity)} <span style="font-weight:400; font-family:var(--mono); opacity:0.7;">(${fmtDate})</span></div>`;
+                innerHtml += `<div class="vt-event-line" style="left:${x}px;border-left:2px dashed var(--accent);"></div>`;
+                innerHtml += `<div class="vt-event-label" style="left:${x}px;top:45px;">${escHtml(ev.activity)} <span style="font-weight:400;font-family:var(--mono);opacity:0.7;">(${fmtDate})</span></div>`;
             });
-
-            // 5. จัดวางงาน (Tasks Layout)
             validTasks.sort((a, b) => a.parsedDate - b.parsedDate);
-
-            const tracks = [];
-            const taskW = 160;
-            const taskH = 50;
-            const nodePos = {};
-
+            const tracks = [], nodePos = {}, taskW = 160, taskH = 50;
             validTasks.forEach(t => {
                 const x = ((t.parsedDate.getTime() - minTime) / 86400000) * pxPerDay;
                 let trackIdx = 0;
-
-                // อัลกอริทึมจัดลำดับ Track เพื่อไม่ให้กล่องทับกัน
                 while (true) {
                     if (!tracks[trackIdx]) tracks[trackIdx] = [];
-                    const canPlace = !tracks[trackIdx].some(taken => {
-                        return !(x + taskW + 30 < taken.x || x > taken.x + taskW + 30);
-                    });
-                    if (canPlace) {
-                        tracks[trackIdx].push({ x, id: t.id });
-                        break;
-                    }
+                    const canPlace = !tracks[trackIdx].some(taken => !(x + taskW + 30 < taken.x || x > taken.x + taskW + 30));
+                    if (canPlace) { tracks[trackIdx].push({ x, id: t.id }); break; }
                     trackIdx++;
                 }
-
                 const y = 110 + trackIdx * (taskH + 20);
                 nodePos[t.id] = { x, y, w: taskW, h: taskH };
-
                 const phaseColor = PHASE_COLORS[t.phase] || 'var(--border)';
                 const sm = STATUS_META[t.status] || { icon: '' };
-
-                innerHtml += `
-          <div class="vt-task" style="left:${x}px; top:${y}px; border-left: 5px solid ${phaseColor}; width:${taskW}px; height:${taskH}px;" onclick="editTask('${t.id}')">
-            <div class="vt-task-title">${escHtml(t.name)}</div>
-            <div class="vt-task-meta">
-              <span>${sm.icon} <b>${t.id}</b></span>
-              <span>${formatThaiDate(t.deadline)}</span>
-            </div>
-          </div>`;
+                innerHtml += `<div class="vt-task" style="left:${x}px;top:${y}px;border-left:5px solid ${phaseColor};width:${taskW}px;height:${taskH}px;" onclick="editTask('${t.id}')">
+                    <div class="vt-task-title">${escHtml(t.name)}</div>
+                    <div class="vt-task-meta"><span>${sm.icon} <b>${t.id}</b></span><span>${formatThaiDate(t.deadline)}</span></div>
+                </div>`;
             });
-
-            // 6. วาดเส้นความสัมพันธ์ (Dependency Curves)
             validTasks.forEach(t => {
                 if (t.dependsOn && nodePos[t.dependsOn] && nodePos[t.id]) {
-                    const from = nodePos[t.dependsOn];
-                    const to = nodePos[t.id];
-
-                    const x1 = from.x + from.w;
-                    const y1 = from.y + from.h / 2;
-                    const x2 = to.x;
-                    const y2 = to.y + to.h / 2;
-
-                    // วาดเส้นโค้ง Bezier
-                    const cp1x = x1 + (x2 - x1) / 2;
-                    const cp2x = x1 + (x2 - x1) / 2;
-
-                    svg += `<path d="M ${x1} ${y1} C ${cp1x} ${y1}, ${cp2x} ${y2}, ${x2} ${y2}" 
-                     fill="none" stroke="var(--text3)" stroke-width="1.2" stroke-dasharray="4,2" 
-                     marker-end="url(#vt-arrow)" style="opacity: 0.6;" />`;
+                    const from = nodePos[t.dependsOn], to = nodePos[t.id];
+                    const x1 = from.x + from.w, y1 = from.y + from.h / 2, x2 = to.x, y2 = to.y + to.h / 2;
+                    const cp = x1 + (x2 - x1) / 2;
+                    svg += `<path d="M ${x1} ${y1} C ${cp} ${y1}, ${cp} ${y2}, ${x2} ${y2}" fill="none" stroke="var(--text3)" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#vt-arrow)" style="opacity:0.6;" />`;
                 }
             });
-
             const maxTrackHeight = tracks.length * (taskH + 20) + 200;
-            svg += `</svg>`;
-
-            // แสดงผลลง Container
-            containerEl.innerHTML = `
-        <div class="vt-container" style="width:${containerWidth}px; min-height:${maxTrackHeight}px;">
-          ${innerHtml}
-          ${svg}
-        </div>`;
-
-            // Auto-Scroll ไปยังจุดที่ใกล้ "วันนี้"
-            setTimeout(() => {
-                containerEl.scrollLeft = Math.max(0, todayX - 200);
-            }, 100);
+            svg += '</svg>';
+            containerEl.innerHTML = `<div class="vt-container" style="width:${containerWidth}px;min-height:${maxTrackHeight}px;">${innerHtml}${svg}</div>`;
+            setTimeout(() => { containerEl.scrollLeft = Math.max(0, todayX - 200); }, 100);
         }
+
         // ── Countdown ────────────────────────────────────────────────
         function startCountdown() {
             const TARGET = new Date('2026-11-01T07:00:00');
             function tick() {
                 const diff = TARGET - new Date();
                 if (diff <= 0) { ['days', 'hrs', 'min', 'sec'].forEach(k => document.getElementById('cd-' + k).textContent = '0'); return; }
-                const d = Math.floor(diff / 86400000);
-                const h = Math.floor((diff % 86400000) / 3600000);
-                const m = Math.floor((diff % 3600000) / 60000);
-                const s = Math.floor((diff % 60000) / 1000);
-                document.getElementById('cd-days').textContent = d;
-                document.getElementById('cd-hrs').textContent = String(h).padStart(2, '0');
-                document.getElementById('cd-min').textContent = String(m).padStart(2, '0');
-                document.getElementById('cd-sec').textContent = String(s).padStart(2, '0');
+                document.getElementById('cd-days').textContent = Math.floor(diff / 86400000);
+                document.getElementById('cd-hrs').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+                document.getElementById('cd-min').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+                document.getElementById('cd-sec').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
             }
             tick(); setInterval(tick, 1000);
         }
 
-        // ── Dark mode ────────────────────────────────────────────────
-        function toggleDark() { document.body.classList.toggle('dark'); }
+        function toggleDark() { document.body.classList.toggle('dark') }
 
         // ── Progress bars ────────────────────────────────────────────
         function renderProgressBars() {
@@ -2561,7 +3201,7 @@
         // ── Tech filter ──────────────────────────────────────────────
         function renderTechFilter() {
             const techs = new Set();
-            ALL_TASKS.forEach(t => (t.tech || []).forEach(tech => { if (tech) techs.add(tech); }));
+            ALL_TASKS.forEach(t => (t.tech || []).forEach(tech => { if (tech) techs.add(tech) }));
             const btns = [...techs].sort().map(tech => {
                 const active = activeTechFilter === tech ? ' active' : '';
                 return `<button class="tech-filter-btn${active}" onclick="setTechFilter('${escHtml(tech)}')">${escHtml(tech)}</button>`;
@@ -2572,55 +3212,35 @@
         function setTechFilter(tech) { activeTechFilter = activeTechFilter === tech ? '' : tech; renderTechFilter(); render(); }
 
         // ── Sort by date ─────────────────────────────────────────────
-        // Deadline strings are informal Thai text, so we do a best-effort parse.
-        // Tasks with no parseable deadline sort to the bottom.
-        function parseDeadline(str) {
-            if (!str) return null;
-            const d = new Date(str);
-            return isNaN(d.getTime()) ? null : d;
-        }
+        function parseDeadline(str) { if (!str) return null; const d = new Date(str); return isNaN(d.getTime()) ? null : d; }
 
         function sortByDate() {
             isSortedByDate = !isSortedByDate;
             const btn = document.getElementById('btn-sort-date');
-
-            if (isSortedByDate) {
-                btn.classList.add('active'); // ไฮไลท์ปุ่มเป็นสีฟ้าเมื่อเปิดใช้งาน
-                btn.title = 'สลับกลับไปเรียงตามความสำคัญ';
-                showToast('สลับไปโหมด: เรียงตามกำหนดส่ง (Deadline) ✓');
-            } else {
-                btn.classList.remove('active');
-                btn.title = 'เรียงตามวันที่';
-                showToast('สลับกลับไปโหมด: เรียงตามความเร่งด่วน (Default) ✓');
-            }
-
+            if (isSortedByDate) { btn.classList.add('active'); showToast('เรียงตามกำหนดส่ง ✓'); }
+            else { btn.classList.remove('active'); showToast('เรียงตามความเร่งด่วน ✓'); }
             render();
         }
+
         // ── Drag & Drop ───────────────────────────────────────────────
         function initSortable() {
             const el = document.getElementById('task-container');
             if (sortableInstance) { sortableInstance.destroy(); sortableInstance = null; }
-
-            // ปิดระบบลากสลับที่ฝั่งบอร์ดชั่วคราว หากใช้งานโหมดจัดเรียงตามวันที่อยู่
             if (isSortedByDate) return;
-
             sortableInstance = Sortable.create(el, {
-                handle: '.drag-handle',
-                ghostClass: 'sortable-ghost',
-                dragClass: 'sortable-drag',
-                animation: 150,
-                onEnd: function (evt) {
+                handle: '.drag-handle', ghostClass: 'sortable-ghost', dragClass: 'sortable-drag', animation: 150,
+                onEnd: function () {
                     const ids = [...el.querySelectorAll('.task-card[data-id]')].map(el => el.dataset.id);
-                    const visibleTasks = getFiltered();
-                    const visibleIds = visibleTasks.map(t => t.id);
                     const reordered = ids.map(id => ALL_TASKS.find(t => t.id === id)).filter(Boolean);
-                    const nonVisible = ALL_TASKS.filter(t => !visibleIds.includes(t.id));
+                    const visibleIds = new Set(ids);
+                    const nonVisible = ALL_TASKS.filter(t => !visibleIds.has(t.id));
                     ALL_TASKS = [...reordered, ...nonVisible];
                     ALL_TASKS.forEach((t, i) => { orderMap[t.id] = i; });
                     showToast('จัดลำดับใหม่เรียบร้อย');
                 }
             });
         }
+
         // ── Sub-tasks ────────────────────────────────────────────────
         function addSubTask(taskId) {
             event.stopPropagation();
@@ -2633,7 +3253,6 @@
             task.subTasks.push({ text, done: false });
             input.value = '';
             addLog(taskId, 'Add SubTask', '—', text);
-            // Re-render just this card's subtask section without collapsing
             renderSubTasks(taskId);
         }
 
@@ -2641,48 +3260,23 @@
             event.stopPropagation();
             const task = ALL_TASKS.find(t => t.id === taskId);
             if (!task || !task.subTasks) return;
-
-            // เปลี่ยนสถานะงานย่อย
             task.subTasks[idx].done = !task.subTasks[idx].done;
-
-            // --- LOGIC: Smart Sub-task Sync ---
             const total = task.subTasks.length;
             const doneCount = task.subTasks.filter(s => s.done).length;
-
-            if (total > 0 && doneCount === total) {
-                // ถ้าทำครบทุกข้อ และสถานะยังไม่ใช่ Done/Review ให้ขยับเป็น Review
-                if (task.status !== 'done' && task.status !== 'review') {
-                    const oldStatus = task.status;
-                    task.status = 'review';
-                    addLog(taskId, 'Auto-Progress', oldStatus, 'review');
-                    showToast('งานย่อยครบแล้ว! เปลี่ยนสถานะเป็น Review อัตโนมัติ 🚀');
-                }
+            if (total > 0 && doneCount === total && task.status !== 'done' && task.status !== 'review') {
+                const oldStatus = task.status; task.status = 'review';
+                addLog(taskId, 'Auto-Progress', oldStatus, 'review');
+                showToast('งานย่อยครบแล้ว! เปลี่ยนสถานะเป็น Review อัตโนมัติ 🚀');
             }
-
-            // บันทึก Log และ Render UI ใหม่
             addLog(taskId, 'SubTask Toggle', '—', task.subTasks[idx].text + (task.subTasks[idx].done ? ' ✓' : ' ✗'));
             renderSubTasks(taskId);
-            render(); // เพื่ออัปเดต Badge สถานะบน Card หลัก
-
-            // บันทึกข้อมูลลง Google Sheets ทันที
+            render();
             syncTaskToServer(task);
         }
 
-        // 2. ฟังก์ชันสำหรับส่งข้อมูลเฉพาะ Task นั้นๆ ขึ้น Backend (Surgical Sync)
         function syncTaskToServer(task) {
-            fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors', // เนื่องจากเป็น GAS Web App
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    action: 'save',
-                    task: task
-                })
-            }).then(() => {
-                console.log(`Task ${task.id} synced.`);
-            }).catch(err => {
-                showToast('Sync ไม่สำเร็จ: ' + err.message, true);
-            });
+            fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'save', task }) })
+                .catch(err => showToast('Sync ไม่สำเร็จ: ' + err.message, true));
         }
 
         function deleteSubTask(taskId, idx) {
@@ -2709,46 +3303,33 @@
             const progressBar = subs.length ? `<div class="subtask-progress-bar"><div class="subtask-progress-fill" style="width:${pct}%"></div></div><span style="font-size:10px;color:var(--text3);font-family:var(--mono)">${doneCount}/${subs.length}</span>` : '';
             const items = subs.map((s, i) =>
                 `<div class="subtask-item">
-          <input type="checkbox" ${s.done ? 'checked' : ''} onclick="toggleSubTask('${t.id}',${i})">
-          <span class="subtask-text${s.done ? ' done' : ''}">${escHtml(s.text)}</span>
-          <button class="subtask-del" onclick="deleteSubTask('${t.id}',${i})" title="ลบ">✕</button>
-        </div>`
+                    <input type="checkbox" ${s.done ? 'checked' : ''} onclick="toggleSubTask('${t.id}',${i})">
+                    <span class="subtask-text${s.done ? ' done' : ''}">${escHtml(s.text)}</span>
+                    <button class="subtask-del" onclick="deleteSubTask('${t.id}',${i})" title="ลบ">✕</button>
+                </div>`
             ).join('');
-            return `<div class="subtasks-label">Sub-tasks ${progressBar}</div>
-        ${items}
-        <div class="subtask-add-row">
-          <input type="text" class="subtask-add-input" id="sub-input-${t.id}" placeholder="เพิ่มงานย่อย..." onkeydown="if(event.key==='Enter')addSubTask('${t.id}')">
-          <button class="subtask-add-btn" onclick="addSubTask('${t.id}')">+ เพิ่ม</button>
-        </div>`;
+            return `<div class="subtasks-label">Sub-tasks ${progressBar}</div>${items}
+                <div class="subtask-add-row">
+                    <input type="text" class="subtask-add-input" id="sub-input-${t.id}" placeholder="เพิ่มงานย่อย..." onkeydown="if(event.key==='Enter')addSubTask('${t.id}')">
+                    <button class="subtask-add-btn" onclick="addSubTask('${t.id}')">+ เพิ่ม</button>
+                </div>`;
         }
 
         // ── Filtering ─────────────────────────────────────────────────
         function getFiltered() {
             let tasks = [...ALL_TASKS];
-
             if (isSortedByDate) {
-                // 1. กรณีเปิดโหมด: เรียงตามวันที่อย่างเคร่งครัด (งานที่ไม่มีวันที่จะถูกย้ายไปล่างสุด)
                 tasks.sort((a, b) => {
-                    const da = parseDeadline(a.deadline);
-                    const db = parseDeadline(b.deadline);
+                    const da = parseDeadline(a.deadline), db = parseDeadline(b.deadline);
                     if (!da && !db) return (orderMap[a.id] ?? 0) - (orderMap[b.id] ?? 0);
-                    if (!da) return 1;
-                    if (!db) return -1;
+                    if (!da) return 1; if (!db) return -1;
                     return da - db;
                 });
             } else {
-                // 2. โหมดปกติ: เรียงตาม Priority และ ลำดับการลากวาง (Default)
-                const priorityOrder = { '1-urgent': 0, '2-high': 1, '3-medium': 2, '4-low': 3, '': 4 };
-                tasks.sort((a, b) => {
-                    const po = (priorityOrder[a.priority || ''] ?? 4) - (priorityOrder[b.priority || ''] ?? 4);
-                    if (po !== 0) return po;
-                    return (orderMap[a.id] ?? 0) - (orderMap[b.id] ?? 0);
-                });
+                const po = { '1-urgent': 0, '2-high': 1, '3-medium': 2, '4-low': 3, '': 4 };
+                tasks.sort((a, b) => { const d = (po[a.priority || ''] ?? 4) - (po[b.priority || ''] ?? 4); return d !== 0 ? d : (orderMap[a.id] ?? 0) - (orderMap[b.id] ?? 0); });
             }
-
-            // ทำการ Filter ข้อมูลตามเงื่อนไขอื่นต่อ...
-            if (activeFilter.type === 'phase' && activeFilter.value !== 'all')
-                tasks = tasks.filter(t => t.phase === activeFilter.value);
+            if (activeFilter.type === 'phase' && activeFilter.value !== 'all') tasks = tasks.filter(t => t.phase === activeFilter.value);
             if (activeFilter.type === 'status') tasks = tasks.filter(t => t.status === activeFilter.value);
             if (activeFilter.type === 'assignee') tasks = tasks.filter(t => t.assignee === activeFilter.value);
             if (activeFilter.type === 'priority') tasks = tasks.filter(t => (t.priority || '3-medium') === activeFilter.value);
@@ -2756,12 +3337,7 @@
             if (activeTechFilter) tasks = tasks.filter(t => (t.tech || []).includes(activeTechFilter));
             if (searchQuery) {
                 const q = searchQuery.toLowerCase();
-                tasks = tasks.filter(t =>
-                    t.name.toLowerCase().includes(q) ||
-                    (t.detail || []).some(d => d.toLowerCase().includes(q)) ||
-                    (t.tech || []).some(t2 => t2.toLowerCase().includes(q)) ||
-                    (t.assignee || '').toLowerCase().includes(q)
-                );
+                tasks = tasks.filter(t => t.name.toLowerCase().includes(q) || (t.detail || []).some(d => d.toLowerCase().includes(q)) || (t.tech || []).some(t2 => t2.toLowerCase().includes(q)) || (t.assignee || '').toLowerCase().includes(q));
             }
             return tasks;
         }
@@ -2777,23 +3353,20 @@
                 phase_p3: 'Phase 3 — KKUEXAM', phase_p4: 'Phase 4 — วันงาน',
                 status_done: '✅ Done', status_review: '🔍 Review', status_progress: '🔄 In Progress',
                 status_todo: '📋 To Do', status_notyet: '⏳ Not Yet',
-                priority_1_urgent: '🔴 Urgent', priority_2_high: '🟠 High', priority_3_medium: '🟡 Medium', priority_4_low: '🔵 Low',
             };
             const key = type + '_' + value.replace(/-/g, '_');
             document.getElementById('topbar-title').textContent = titles[key] || (type === 'assignee' ? value : 'งานทั้งหมด');
-
-            // บังคับกลับมาหน้า Board ทันที และซ่อน Timeline ทั้งสองแบบ
             currentView = 'tasks';
-            const tasks = document.getElementById('tasks-panel');
-            const timeline = document.getElementById('timeline-panel');
-            const visual = document.getElementById('visual-timeline-panel');
-
-            if (tasks) tasks.classList.remove('hidden');
-            if (timeline) timeline.classList.remove('visible');
-            if (visual) visual.classList.remove('visible');
-
-            document.getElementById('btn-split').style.display = '';
+            document.getElementById('tasks-panel').classList.remove('hidden');
+            document.getElementById('timeline-panel').classList.remove('visible');
+            document.getElementById('visual-timeline-panel').classList.remove('visible');
+            document.getElementById('overview-panel').classList.remove('visible');
+            document.getElementById('stats-bar').style.display = '';
+            document.getElementById('tech-filter-bar').style.display = '';
+            document.getElementById('search-wrap').style.display = '';
+            document.getElementById('btn-add-task').style.display = '';
             document.getElementById('btn-sort-date').style.display = '';
+            document.getElementById('btn-split').style.display = '';
             render();
         }
 
@@ -2804,58 +3377,82 @@
             renderTechFilter();
         }
 
-        function onSearch(q) { searchQuery = q; render(); }
+        function onSearch(q) { searchQuery = q; render() }
 
         // ── Render ────────────────────────────────────────────────────
+        function buildMixedPhaseHtml(phaseTasks, phaseId) {
+            const now = new Date(); now.setHours(0, 0, 0, 0);
+            const fmtShort = d => d.toLocaleDateString('th-TH', { month: 'short', day: 'numeric' });
+            
+            // 1. ดึงกำหนดการเฉพาะเฟสนี้
+            const phaseEvents = TIMELINE_EVENTS.filter(ev => getEventPhase(ev.activity) === phaseId);
+            
+            // 2. รวมข้อมูลงานและกำหนดการเข้าด้วยกัน
+            const mixedItems = [];
+            phaseEvents.forEach(ev => {
+                const d = new Date(ev.start);
+                if (!isNaN(d.getTime())) mixedItems.push({ type: 'event', date: d, data: ev });
+            });
+            phaseTasks.forEach(t => {
+                const d = parseDeadline(t.deadline);
+                mixedItems.push({ type: 'task', date: d, data: t });
+            });
+            
+            // 3. เรียงลำดับเวลาจริง (งานไม่มีกำหนดส่งจะอยู่ท้ายสุด)
+            mixedItems.sort((a, b) => {
+                if (!a.date && !b.date) return 0;
+                if (!a.date) return 1;
+                if (!b.date) return -1;
+                return a.date - b.date;
+            });
+            
+            // 4. แปลงข้อมูลเป็น HTML
+            return mixedItems.map(item => {
+                if (item.type === 'event') {
+                    const ev = item.data;
+                    const dateStr = ev.end ? `${fmtShort(new Date(ev.start))} – ${fmtShort(new Date(ev.end))}` : fmtShort(item.date);
+                    return `
+                    <div class="tl-event-line-sep" title="สถานที่: ${escHtml(ev.place)}">
+                        <span class="tl-event-line-text">
+                            ${ev.isMain ? '🏆' : '📍'} ${escHtml(ev.activity)} (${dateStr})
+                        </span>
+                    </div>`;
+                } else {
+                    return taskCard(item.data);
+                }
+            }).join('');
+        }
+
         function render() {
-            updateCounts();
-            updateAssigneeNav();
-            renderProgressBars();
-            renderTechFilter();
-
-            if (currentView === 'flow') {
-                renderVisualTimeline();
-                return;
-            }
-
-            if (currentView === 'timeline') {
-                renderTimeline();
-                return;
-            }
+            updateCounts(); updateAssigneeNav(); renderProgressBars(); renderTechFilter();
+            if (currentView === 'flow') { renderVisualTimeline(); return; }
+            if (currentView === 'timeline') { renderTimeline(); return; }
+            if (currentView === 'overview') return;
 
             const tasks = getFiltered();
             const container = document.getElementById('task-container');
-
             const hasExtra = activeTechFilter || searchQuery || (activeFilter.type !== 'phase' || activeFilter.value !== 'all');
             document.getElementById('filter-clear').style.display = hasExtra ? 'inline-flex' : 'none';
 
-            if (!tasks.length) {
-                container.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">ไม่พบงานที่ตรงกัน</div></div>`;
-                return;
-            }
+            if (!tasks.length) { container.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">ไม่พบงานที่ตรงกัน</div></div>`; return; }
 
             if (activeFilter.type === 'phase' && activeFilter.value !== 'all') {
                 const groups = {};
-                tasks.forEach(t => { (groups[t.group] = groups[t.group] || []).push(t); });
-                container.innerHTML = Object.entries(groups).map(([g, ts]) =>
-                    `<div class="group-label">${g}</div>` + ts.map(taskCard).join('')
-                ).join('');
+                tasks.forEach(t => { (groups[t.group] = groups[t.group] || []).push(t) });
+                container.innerHTML = Object.entries(groups).map(([g, ts]) => `<div class="group-label">${g}</div>` + ts.map(taskCard).join('')).join('');
             } else {
                 const phases = {};
-                tasks.forEach(t => { (phases[t.phase] = phases[t.phase] || []).push(t); });
+                tasks.forEach(t => { (phases[t.phase] = phases[t.phase] || []).push(t) });
                 container.innerHTML = Object.entries(phases).map(([p, ts]) => {
                     const meta = PHASE_META[p] || { label: p, color: '#888' };
-                    return `<div class="group-label" style="color:${meta.color}">${meta.label}</div>` + ts.map(taskCard).join('');
+                    return `<div class="group-label" style="color:${meta.color}">${meta.label}</div>` + buildMixedPhaseHtml(ts, p);
                 }).join('');
             }
 
-            // Restore expanded state
             expandedIds.forEach(id => {
                 const el = document.querySelector(`.task-card[data-id="${id}"]`);
                 if (el) el.classList.add('expanded');
             });
-
-            // Init drag & drop after DOM is settled
             initSortable();
         }
 
@@ -2868,69 +3465,52 @@
             const phaseColor = PHASE_COLORS[t.phase] || 'var(--border)';
             const details = (t.detail || []).map(d => `<li>${escHtml(d)}</li>`).join('');
             const techPills = (t.tech || []).filter(Boolean).map(tech => `<span class="tech-pill">${escHtml(tech)}</span>`).join('');
-
             let depWarn = '';
-            if (t.dependsOn) {
-                const dep = ALL_TASKS.find(x => x.id === t.dependsOn);
-                if (dep && dep.status !== 'done') {
-                    depWarn = `<div class="dep-warning">⚠️ รอ: <strong>${escHtml(dep.name)}</strong> (${STATUS_META[dep.status]?.label || dep.status})</div>`;
-                }
-            }
-
+            if (t.dependsOn) { const dep = ALL_TASKS.find(x => x.id === t.dependsOn); if (dep && dep.status !== 'done') depWarn = `<div class="dep-warning">⚠️ รอ: <strong>${escHtml(dep.name)}</strong> (${STATUS_META[dep.status]?.label || dep.status})</div>`; }
             const commentHtml = t.comment ? `<div class="comment-box"><span style="color:var(--text3);font-size:11px">💬 </span><span class="comment-text">${escHtml(t.comment)}</span></div>` : '';
             const urlChip = t.url ? `<a class="chip-url" href="${escHtml(t.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔗 เปิด Resource</a>` : '';
-
             const assigneeOpts = ASSIGNEES.map(a => `<option${a === t.assignee ? ' selected' : ''}>${escHtml(a)}</option>`).join('');
-            const assigneeSwap = `<select class="assignee-dropdown" onclick="event.stopPropagation()" onchange="quickAssign('${t.id}',this.value)">${assigneeOpts}</select>`;
-
-            // Sub-tasks summary chip (in collapsed view)
             const subs = t.subTasks || [];
             const subsDone = subs.filter(s => s.done).length;
             const subChip = subs.length ? `<span class="chip" style="background:var(--surface2);color:var(--text3);font-size:10px">☑ ${subsDone}/${subs.length}</span>` : '';
             const dragHandleHtml = isSortedByDate ? '' : '<span class="drag-handle" onclick="event.stopPropagation()">⠿</span>';
 
-            return `<div class="task-card${isBlocker ? ' blocker-card' : ''}" 
-               data-id="${t.id}" 
-               style="border-left: 5px solid ${phaseColor}" 
-               onclick="toggleCard(this,'${t.id}')">
-  <div class="task-row">
-    ${dragHandleHtml}
-    <div class="status-dot s-${t.status}"></div>
-    ${isBlocker ? '<span title="Blocker" style="font-size:12px">🔴</span>' : ''}
-    <span class="task-name">${escHtml(t.name)}</span>
-    <div class="task-chips">
-      <span class="chip ${pm.cls || ''}">${pm.icon || ''} ${pm.label || ''}</span>
-      <span class="chip c-${t.status}">${sm.icon} ${sm.label}</span>
-      ${subChip}
-      ${t.assignee ? `<span class="chip-assignee">${escHtml(t.assignee)}</span>` : ''}
-      ${t.deadline ? `<span class="chip-deadline">${formatThaiDate(t.deadline)}</span>` : ''}      ${urlChip}
-    </div>
-    <span class="chevron">▾</span>
-  </div>
-  <div class="task-detail-wrap">
-    ${depWarn}
-    ${details ? `<ul class="detail-list">${details}</ul>` : ''}
-    ${techPills ? `<div class="tech-pills">${techPills}</div>` : ''}
-    ${commentHtml}
-    <!-- Sub-tasks section -->
-    <div class="subtasks-section" id="subtasks-${t.id}" onclick="event.stopPropagation()">
-      ${buildSubTasksHtml(t)}
-    </div>
-    <div class="card-actions">
-      <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();editTask('${t.id}')">✎ แก้ไข</button>
-      <span style="font-size:11px;color:var(--text3);margin-left:4px">ผู้รับผิดชอบ:</span>
-      ${assigneeSwap}
-      <span style="font-size:11px;color:var(--text3);margin-left:auto;font-family:var(--mono)">${t.id}</span>
-    </div>
-  </div>
-</div>`;
+            return `<div class="task-card${isBlocker ? ' blocker-card' : ''}" data-id="${t.id}" style="border-left:5px solid ${phaseColor}" onclick="toggleCard(this,'${t.id}')">
+                <div class="task-row">
+                    ${dragHandleHtml}
+                    <div class="status-dot s-${t.status}"></div>
+                    ${isBlocker ? '<span title="Blocker" style="font-size:12px">🔴</span>' : ''}
+                    <span class="task-name">${escHtml(t.name)}</span>
+                    <div class="task-chips">
+                        <span class="chip ${pm.cls || ''}">${pm.icon || ''} ${pm.label || ''}</span>
+                        <span class="chip c-${t.status}">${sm.icon} ${sm.label}</span>
+                        ${subChip}
+                        ${t.assignee ? `<span class="chip-assignee">${escHtml(t.assignee)}</span>` : ''}
+                        ${t.deadline ? `<span class="chip-deadline">${formatThaiDate(t.deadline)}</span>` : ''}
+                        ${urlChip}
+                    </div>
+                    <span class="chevron">▾</span>
+                </div>
+                <div class="task-detail-wrap">
+                    ${depWarn}
+                    ${details ? `<ul class="detail-list">${details}</ul>` : ''}
+                    ${techPills ? `<div class="tech-pills">${techPills}</div>` : ''}
+                    ${commentHtml}
+                    <div class="subtasks-section" id="subtasks-${t.id}" onclick="event.stopPropagation()">${buildSubTasksHtml(t)}</div>
+                    <div class="card-actions">
+                        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();editTask('${t.id}')">✎ แก้ไข</button>
+                        <span style="font-size:11px;color:var(--text3);margin-left:4px">ผู้รับผิดชอบ:</span>
+                        <select class="assignee-dropdown" onclick="event.stopPropagation()" onchange="quickAssign('${t.id}',this.value)">${assigneeOpts}</select>
+                        <span style="font-size:11px;color:var(--text3);margin-left:auto;font-family:var(--mono)">${t.id}</span>
+                    </div>
+                </div>
+            </div>`;
         }
 
         function quickAssign(id, assignee) {
             const task = ALL_TASKS.find(t => t.id === id);
             if (!task) return;
-            const old = task.assignee;
-            task.assignee = assignee;
+            const old = task.assignee; task.assignee = assignee;
             addLog(id, 'Quick Assign', old, assignee);
             showToast(`มอบหมาย ${id} → ${assignee} ✓`);
             render();
@@ -2962,16 +3542,15 @@
         function updateAssigneeNav() {
             const counts = {};
             ALL_TASKS.forEach(t => { if (t.assignee) counts[t.assignee] = (counts[t.assignee] || 0) + 1; });
-            const nav = document.getElementById('assignee-nav');
-            nav.innerHTML = Object.entries(counts).map(([name, cnt]) => {
+            document.getElementById('assignee-nav').innerHTML = Object.entries(counts).map(([name, cnt]) => {
                 const meta = AVATAR_COLORS[name] || { bg: '#F0EDE8', color: '#5A5854' };
                 const initials = name.slice(0, 2).toUpperCase();
                 const isActive = activeFilter.type === 'assignee' && activeFilter.value === name;
                 return `<div class="assignee-item${isActive ? ' active' : ''}" onclick="setFilter('assignee','${name}',this)">
-      <div class="avatar-sm" style="background:${meta.bg};color:${meta.color}">${initials}</div>
-      ${escHtml(name)}
-      <span style="margin-left:auto;font-size:11px;font-family:var(--mono);color:var(--text3)">${cnt}</span>
-    </div>`;
+                    <div class="avatar-sm" style="background:${meta.bg};color:${meta.color}">${initials}</div>
+                    ${escHtml(name)}
+                    <span style="margin-left:auto;font-size:11px;font-family:var(--mono);color:var(--text3)">${cnt}</span>
+                </div>`;
             }).join('');
         }
 
@@ -2983,17 +3562,15 @@
         }
 
         // ── Modal ─────────────────────────────────────────────────────
-        let editingId = null;
-        let tempSubTasks = [];
+        let editingId = null, tempSubTasks = [];
 
         function populateDependsDropdown(excludeId) {
             const select = document.getElementById('f-depends');
             select.innerHTML = '<option value="">-- ไม่อ้างอิง --</option>';
             ALL_TASKS.forEach(t => {
-                if (t.id === excludeId) return; // ป้องกันการอ้างอิงตัวเอง
+                if (t.id === excludeId) return;
                 const opt = document.createElement('option');
-                opt.value = t.id; // เบื้องหลังยังเก็บเป็น ID เพื่อบันทึกลง Database
-                opt.textContent = t.name; // แสดงผลเป็นชื่องาน
+                opt.value = t.id; opt.textContent = t.name;
                 select.appendChild(opt);
             });
         }
@@ -3003,16 +3580,13 @@
             document.getElementById('modal-title').textContent = 'เพิ่มงานใหม่';
             document.getElementById('btn-delete').style.display = 'none';
             populateDependsDropdown(null);
-            ['f-id', 'f-name', 'f-deadline', 'f-assignee', 'f-group', 'f-detail', 'f-tech', 'f-url', 'f-depends', 'f-comment', 'modal-subtask-input'].forEach(id => { document.getElementById(id).value = ''; });
+            ['f-id', 'f-name', 'f-deadline', 'f-assignee', 'f-group', 'f-detail', 'f-tech', 'f-url', 'f-depends', 'f-comment', 'modal-subtask-input'].forEach(id => { document.getElementById(id).value = '' });
             document.getElementById('f-status').value = 'todo';
             document.getElementById('f-priority').value = '3-medium';
-
-            tempSubTasks = [];
-            renderModalSubTasks();
-
             document.getElementById('f-phase').value = activeFilter.type === 'phase' && activeFilter.value !== 'all' ? activeFilter.value : 'p1';
             document.getElementById('f-blocker').checked = false;
             document.getElementById('dep-warn-modal').classList.remove('visible');
+            tempSubTasks = []; renderModalSubTasks();
             document.getElementById('modal-backdrop').classList.add('open');
             document.getElementById('f-name').focus();
         }
@@ -3027,39 +3601,27 @@
             document.getElementById('f-name').value = t.name;
             document.getElementById('f-status').value = t.status;
             document.getElementById('f-priority').value = t.priority || '3-medium';
-
-            // แก้ไขปัญหา: จัดการรูปแบบวันที่ให้เป็น YYYY-MM-DD เพื่อใส่ใน <input type="date">
             let deadlineVal = t.deadline || '';
             if (deadlineVal) {
                 const d = new Date(deadlineVal);
-                if (!isNaN(d.getTime())) {
-                    const y = d.getFullYear();
-                    const m = String(d.getMonth() + 1).padStart(2, '0');
-                    const day = String(d.getDate()).padStart(2, '0');
-                    deadlineVal = `${y}-${m}-${day}`;
-                }
+                if (!isNaN(d.getTime())) deadlineVal = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
             }
             document.getElementById('f-deadline').value = deadlineVal;
-
             document.getElementById('f-assignee').value = t.assignee || '';
             document.getElementById('f-phase').value = t.phase;
             document.getElementById('f-group').value = t.group || '';
             document.getElementById('f-detail').value = (t.detail || []).join('\n');
             document.getElementById('f-tech').value = (t.tech || []).join(', ');
             document.getElementById('f-url').value = t.url || '';
-
             populateDependsDropdown(t.id);
             document.getElementById('f-depends').value = t.dependsOn || '';
             document.getElementById('f-comment').value = t.comment || '';
             document.getElementById('f-blocker').checked = t.isBlocker === true || t.isBlocker === 'TRUE';
-
             document.getElementById('dep-warn-modal').classList.remove('visible');
             if (t.dependsOn) checkDependency(t.dependsOn);
-
             document.getElementById('modal-subtask-input').value = '';
-            tempSubTasks = JSON.parse(JSON.stringify(t.subTasks || [])); // Clone ข้อมูล
+            tempSubTasks = JSON.parse(JSON.stringify(t.subTasks || []));
             renderModalSubTasks();
-
             document.getElementById('modal-backdrop').classList.add('open');
         }
 
@@ -3067,63 +3629,36 @@
             const warn = document.getElementById('dep-warn-modal');
             if (!depId) { warn.classList.remove('visible'); return; }
             const dep = ALL_TASKS.find(t => t.id === depId);
-            if (dep && dep.status !== 'done') {
-                document.getElementById('dep-warn-id').textContent = dep.name;
-                warn.classList.add('visible');
-            } else { warn.classList.remove('visible'); }
+            if (dep && dep.status !== 'done') { document.getElementById('dep-warn-id').textContent = dep.name; warn.classList.add('visible'); }
+            else warn.classList.remove('visible');
         }
 
-        function closeModal() { document.getElementById('modal-backdrop').classList.remove('open'); }
-        function handleBackdropClick(e) { if (e.target === document.getElementById('modal-backdrop')) closeModal(); }
+        function closeModal() { document.getElementById('modal-backdrop').classList.remove('open') }
+        function handleBackdropClick(e) { if (e.target === document.getElementById('modal-backdrop')) closeModal() }
 
-        // ── Modal Sub-tasks CRUD ──
         function renderModalSubTasks() {
             const container = document.getElementById('modal-subtasks-list');
-            if (tempSubTasks.length === 0) {
-                container.innerHTML = '<div style="font-size:12px;color:var(--text3);font-style:italic">ไม่มีงานย่อย</div>';
-                return;
-            }
+            if (tempSubTasks.length === 0) { container.innerHTML = '<div style="font-size:12px;color:var(--text3);font-style:italic">ไม่มีงานย่อย</div>'; return; }
             container.innerHTML = tempSubTasks.map((st, i) => `
-        <div style="display:flex;align-items:center;gap:8px;background:var(--surface2);padding:6px 10px;border-radius:var(--radius);border:1px solid var(--border);">
-          <input type="checkbox" style="width:14px;height:14px;margin:0;flex-shrink:0;" ${st.done ? 'checked' : ''} onchange="toggleModalSubTask(${i})">
-          <input type="text" value="${escHtml(st.text)}" oninput="updateModalSubTaskText(${i}, this.value)" style="flex:1;border:none;background:transparent;padding:0;font-size:13px;outline:none;box-shadow:none;color:${st.done ? 'var(--text3)' : 'var(--text)'};text-decoration:${st.done ? 'line-through' : 'none'};">
-          <button type="button" class="subtask-del" style="opacity:1;padding:2px 6px;" onclick="deleteModalSubTask(${i})" title="ลบ">✕</button>
-        </div>
-      `).join('');
+                <div style="display:flex;align-items:center;gap:8px;background:var(--surface2);padding:6px 10px;border-radius:var(--radius);border:1px solid var(--border);">
+                    <input type="checkbox" style="width:14px;height:14px;margin:0;flex-shrink:0;" ${st.done ? 'checked' : ''} onchange="toggleModalSubTask(${i})">
+                    <input type="text" value="${escHtml(st.text)}" oninput="updateModalSubTaskText(${i},this.value)" style="flex:1;border:none;background:transparent;padding:0;font-size:13px;outline:none;box-shadow:none;color:${st.done ? 'var(--text3)' : 'var(--text)'};text-decoration:${st.done ? 'line-through' : 'none'};">
+                    <button type="button" class="subtask-del" style="opacity:1;padding:2px 6px;" onclick="deleteModalSubTask(${i})" title="ลบ">✕</button>
+                </div>`).join('');
         }
 
-        function addModalSubTask() {
-            const input = document.getElementById('modal-subtask-input');
-            const text = input.value.trim();
-            if (!text) return;
-            tempSubTasks.push({ text, done: false });
-            input.value = '';
-            renderModalSubTasks();
-        }
-
-        function toggleModalSubTask(idx) {
-            tempSubTasks[idx].done = !tempSubTasks[idx].done;
-            renderModalSubTasks();
-        }
-
-        function updateModalSubTaskText(idx, val) {
-            tempSubTasks[idx].text = val; // อัปเดตข้อความทันทีที่พิมพ์
-        }
-
-        function deleteModalSubTask(idx) {
-            tempSubTasks.splice(idx, 1);
-            renderModalSubTasks();
-        }
+        function addModalSubTask() { const input = document.getElementById('modal-subtask-input'); const text = input.value.trim(); if (!text) return; tempSubTasks.push({ text, done: false }); input.value = ''; renderModalSubTasks(); }
+        function toggleModalSubTask(idx) { tempSubTasks[idx].done = !tempSubTasks[idx].done; renderModalSubTasks() }
+        function updateModalSubTaskText(idx, val) { tempSubTasks[idx].text = val }
+        function deleteModalSubTask(idx) { tempSubTasks.splice(idx, 1); renderModalSubTasks() }
 
         function handleSave() {
             const name = document.getElementById('f-name').value.trim();
             if (!name) { showToast('กรุณาระบุชื่องาน', true); return; }
-
             const oldTask = editingId ? ALL_TASKS.find(t => t.id === editingId) : null;
             const task = {
                 id: document.getElementById('f-id').value || ('t' + Date.now()),
-                name,
-                status: document.getElementById('f-status').value,
+                name, status: document.getElementById('f-status').value,
                 priority: document.getElementById('f-priority').value,
                 deadline: document.getElementById('f-deadline').value,
                 assignee: document.getElementById('f-assignee').value.trim(),
@@ -3137,45 +3672,22 @@
                 isBlocker: document.getElementById('f-blocker').checked,
                 subTasks: tempSubTasks,
             };
-
-            // Optimistic Update
-            if (oldTask) Object.assign(oldTask, task);
-            else ALL_TASKS.push(task);
-
-            render();
-            closeModal();
-
+            if (oldTask) Object.assign(oldTask, task); else ALL_TASKS.push(task);
+            render(); closeModal();
             showToast('กำลังบันทึกลงฐานข้อมูล...');
-            fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'save', task: task })
-            }).then(() => {
-                showToast('บันทึกสำเร็จ ✓');
-                setTimeout(loadData, 1000);
-            }).catch(err => {
-                showToast('Error: ' + err.message, true);
-            });
+            fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'save', task }) })
+                .then(() => { showToast('บันทึกสำเร็จ ✓'); setTimeout(loadData, 1000); })
+                .catch(err => showToast('Error: ' + err.message, true));
         }
 
         function handleDelete() {
             const id = document.getElementById('f-id').value;
             if (!id || !confirm('ยืนยันการลบงานนี้?')) return;
-
             showToast('กำลังลบข้อมูล...');
-            fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'delete', id: id })
-            }).then(() => {
-                ALL_TASKS = ALL_TASKS.filter(t => t.id !== id);
-                render();
-                closeModal();
-                showToast('ลบงานเรียบร้อย');
-            });
+            fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'delete', id }) })
+                .then(() => { ALL_TASKS = ALL_TASKS.filter(t => t.id !== id); render(); closeModal(); showToast('ลบงานเรียบร้อย'); });
         }
+
         // ── Logs ──────────────────────────────────────────────────────
         function addLog(taskId, action, oldVal, newVal) {
             LOCAL_LOGS.unshift({ ts: new Date().toLocaleString('th-TH'), taskId, user: 'Local', action, old: oldVal || '—', new: newVal || '—' });
@@ -3187,17 +3699,17 @@
                 tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:24px">ยังไม่มี Activity Log</td></tr>';
             } else {
                 tbody.innerHTML = LOCAL_LOGS.map(l => `<tr>
-      <td style="white-space:nowrap">${escHtml(l.ts)}</td>
-      <td><span style="font-family:var(--mono)">${escHtml(l.taskId)}</span></td>
-      <td>${escHtml(l.user)}</td>
-      <td><span class="log-action">${escHtml(l.action)}</span></td>
-      <td><span style="color:var(--notyet)">${escHtml(l.old)}</span> → <span style="color:var(--done)">${escHtml(l.new)}</span></td>
-    </tr>`).join('');
+                    <td style="white-space:nowrap">${escHtml(l.ts)}</td>
+                    <td><span style="font-family:var(--mono)">${escHtml(l.taskId)}</span></td>
+                    <td>${escHtml(l.user)}</td>
+                    <td><span class="log-action">${escHtml(l.action)}</span></td>
+                    <td><span style="color:var(--notyet)">${escHtml(l.old)}</span> → <span style="color:var(--done)">${escHtml(l.new)}</span></td>
+                </tr>`).join('');
             }
             document.getElementById('logs-backdrop').classList.add('open');
         }
 
-        function closeLogsModal() { document.getElementById('logs-backdrop').classList.remove('open'); }
+        function closeLogsModal() { document.getElementById('logs-backdrop').classList.remove('open') }
 
         // ── Toast ─────────────────────────────────────────────────────
         let toastTimer;
@@ -3206,22 +3718,19 @@
             el.textContent = msg;
             el.className = 'show' + (isError ? ' error' : '');
             clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => { el.className = ''; }, 3000);
+            toastTimer = setTimeout(() => { el.className = '' }, 3000);
         }
 
         // ── Helpers ───────────────────────────────────────────────────
-        function escHtml(s) {
-            return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        }
+        function escHtml(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') }
 
         function formatThaiDate(isoString) {
             if (!isoString) return '';
             const d = new Date(isoString);
-            if (isNaN(d.getTime())) return escHtml(isoString); // ถ้าไม่ใช่วันที่มาตรฐาน ให้คืนค่าข้อความเดิม
+            if (isNaN(d.getTime())) return escHtml(isoString);
             return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' });
         }
 
-        // Show split view button only in board/blockers view
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('btn-split').style.display = '';
         });
